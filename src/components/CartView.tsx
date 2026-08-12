@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { X } from "lucide-react";
 import { Button, buttonClasses } from "@/components/Button";
 import { QuantitySelector } from "@/components/QuantitySelector";
+import { placeOrderAction } from "@/app/cart/actions";
 import type { Product } from "@/types/product";
 
 const currencyFormatter = new Intl.NumberFormat("en-US", {
@@ -18,8 +19,16 @@ type CartLine = { product: Product; quantity: number };
 const TAX_RATE = 0.08;
 const SHIPPING_FLAT = 6.99;
 
-export function CartView({ initialCart }: { initialCart: CartLine[] }) {
+export function CartView({
+  initialCart,
+  isLoggedIn,
+}: {
+  initialCart: CartLine[];
+  isLoggedIn: boolean;
+}) {
   const [cart, setCart] = useState<CartLine[]>(initialCart);
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   function updateQuantity(productId: string, quantity: number) {
     setCart((lines) =>
@@ -31,6 +40,21 @@ export function CartView({ initialCart }: { initialCart: CartLine[] }) {
 
   function removeItem(productId: string) {
     setCart((lines) => lines.filter((line) => line.product.id !== productId));
+  }
+
+  function handleCheckout() {
+    setError(null);
+    startTransition(async () => {
+      const result = await placeOrderAction(
+        cart.map((line) => ({
+          productId: line.product.id,
+          quantity: line.quantity,
+        }))
+      );
+      if (result?.error) {
+        setError(result.error);
+      }
+    });
   }
 
   const subtotal = cart.reduce((sum, line) => {
@@ -135,7 +159,25 @@ export function CartView({ initialCart }: { initialCart: CartLine[] }) {
             <dd>{currencyFormatter.format(total)}</dd>
           </div>
         </dl>
-        <Button size="lg">Checkout</Button>
+
+        {error && (
+          <p className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">
+            {error}
+          </p>
+        )}
+
+        {isLoggedIn ? (
+          <Button size="lg" onClick={handleCheckout} disabled={isPending}>
+            {isPending ? "Placing order..." : "Checkout"}
+          </Button>
+        ) : (
+          <Link
+            href="/login?callbackUrl=/cart"
+            className={buttonClasses("primary", "lg")}
+          >
+            Sign in to checkout
+          </Link>
+        )}
       </div>
     </div>
   );

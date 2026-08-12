@@ -1,12 +1,19 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/Button";
 import { signOutAction } from "@/app/actions";
 
 export const metadata: Metadata = {
   title: "Your account",
 };
+
+const currencyFormatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});
 
 export default async function AccountPage() {
   const session = await auth();
@@ -15,6 +22,12 @@ export default async function AccountPage() {
   }
 
   const { user } = session;
+
+  const orders = await prisma.order.findMany({
+    where: { userId: user.id },
+    orderBy: { createdAt: "desc" },
+    take: 10,
+  });
 
   return (
     <div className="mx-auto flex w-full max-w-xl flex-1 flex-col gap-8 px-4 py-16 sm:px-6">
@@ -39,6 +52,38 @@ export default async function AccountPage() {
           <dd className="font-medium">{user.role}</dd>
         </div>
       </dl>
+
+      <div className="flex flex-col gap-3">
+        <h2 className="text-lg font-semibold">Order history</h2>
+        {orders.length === 0 ? (
+          <p className="text-sm text-foreground/60">
+            You haven&apos;t placed any orders yet.
+          </p>
+        ) : (
+          <ul className="flex flex-col divide-y divide-border-subtle rounded-2xl border border-border-subtle">
+            {orders.map((order) => (
+              <li key={order.id}>
+                <Link
+                  href={`/orders/${order.id}`}
+                  className="flex items-center justify-between gap-4 p-4 text-sm hover:bg-surface"
+                >
+                  <div className="flex flex-col">
+                    <span className="font-medium">
+                      Order #{order.id.slice(-8).toUpperCase()}
+                    </span>
+                    <span className="text-xs text-foreground/50">
+                      {order.createdAt.toLocaleDateString()} · {order.status}
+                    </span>
+                  </div>
+                  <span className="font-semibold">
+                    {currencyFormatter.format(order.totalAmount.toNumber())}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
       <form action={signOutAction}>
         <Button type="submit" variant="secondary">
