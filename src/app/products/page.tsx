@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import { ProductFilters } from "@/components/ProductFilters";
 import { ProductGrid } from "@/components/ProductGrid";
-import { products as allProducts } from "@/lib/mock-data";
+import { getProducts } from "@/lib/products";
 import type { Product } from "@/types/product";
 
 export const metadata: Metadata = {
@@ -21,7 +21,7 @@ function sortProducts(products: Product[], sort: string | undefined) {
         (a, b) => (b.salePrice ?? b.price) - (a.salePrice ?? a.price)
       );
     case "rating":
-      return sorted.sort((a, b) => b.rating - a.rating);
+      return sorted.sort((a, b) => (b.avgRating ?? 0) - (a.avgRating ?? 0));
     case "newest":
       return sorted.sort(
         (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -33,18 +33,10 @@ function sortProducts(products: Product[], sort: string | undefined) {
 
 export default async function ProductsPage(props: PageProps<"/products">) {
   const searchParams = await props.searchParams;
-  const query = typeof searchParams.q === "string" ? searchParams.q.trim().toLowerCase() : "";
+  const q = typeof searchParams.q === "string" ? searchParams.q.trim() : undefined;
   const sort = typeof searchParams.sort === "string" ? searchParams.sort : undefined;
 
-  const filtered = query
-    ? allProducts.filter(
-        (product) =>
-          product.name.toLowerCase().includes(query) ||
-          product.brand.toLowerCase().includes(query) ||
-          product.category.name.toLowerCase().includes(query)
-      )
-    : allProducts;
-
+  const filtered = await getProducts({ q });
   const products = sortProducts(filtered, sort);
 
   return (

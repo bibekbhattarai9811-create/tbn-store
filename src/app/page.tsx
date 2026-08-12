@@ -2,10 +2,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { buttonClasses } from "@/components/Button";
 import { ProductGrid } from "@/components/ProductGrid";
-import { categories, getFeaturedProducts } from "@/lib/mock-data";
+import { getCategories, getFeaturedProducts } from "@/lib/products";
 
-export default function Home() {
-  const featuredProducts = getFeaturedProducts(8);
+export default async function Home() {
+  const [categories, featuredProducts] = await Promise.all([
+    getCategories(),
+    getFeaturedProducts(8),
+  ]);
 
   return (
     <div className="flex flex-col">

@@ -47,7 +47,9 @@ export function ProductCard({ product }: { product: Product }) {
           {product.brand}
         </span>
         <h3 className="text-sm font-medium leading-snug">{product.name}</h3>
-        <Rating value={product.rating} reviewCount={product.reviewCount} />
+        {product.avgRating != null && (
+          <Rating value={product.avgRating} reviewCount={product.reviewCount} />
+        )}
         <PriceDisplay price={product.price} salePrice={product.salePrice} />
       </div>
     </Link>

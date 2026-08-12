@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { categories } from "@/lib/mock-data";
+import { getCategories } from "@/lib/products";
 
-export function Footer() {
+export async function Footer() {
+  const categories = await getCategories();
   return (
     <footer className="border-t border-border-subtle bg-surface">
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-4 py-12 sm:grid-cols-4 sm:px-6 lg:px-8">

@@ -3,8 +3,8 @@ import { notFound } from "next/navigation";
 import {
   getCategoryBySlug,
   getProductBySlug,
-  getProductsByCategory,
-} from "@/lib/mock-data";
+  getProducts,
+} from "@/lib/products";
 import { ProductGrid } from "@/components/ProductGrid";
 import { ProductGallery } from "@/components/ProductGallery";
 import { PriceDisplay } from "@/components/PriceDisplay";
@@ -18,12 +18,12 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = await props.params;
 
-  const category = getCategoryBySlug(slug);
+  const category = await getCategoryBySlug(slug);
   if (category) {
     return { title: category.name };
   }
 
-  const product = getProductBySlug(slug);
+  const product = await getProductBySlug(slug);
   if (product) {
     return { title: product.name, description: product.description };
   }
@@ -42,9 +42,9 @@ export default async function ProductOrCategoryPage(
 ) {
   const { slug } = await props.params;
 
-  const category = getCategoryBySlug(slug);
+  const category = await getCategoryBySlug(slug);
   if (category) {
-    const products = getProductsByCategory(category.slug);
+    const products = await getProducts({ categorySlug: category.slug });
     return (
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-10 sm:px-6 lg:px-8">
         <div>
@@ -58,7 +58,7 @@ export default async function ProductOrCategoryPage(
     );
   }
 
-  const product = getProductBySlug(slug);
+  const product = await getProductBySlug(slug);
   if (!product) {
     notFound();
   }
@@ -76,7 +76,9 @@ export default async function ProductOrCategoryPage(
             {product.brand}
           </span>
           <h1 className="text-3xl font-semibold tracking-tight">{product.name}</h1>
-          <Rating value={product.rating} reviewCount={product.reviewCount} />
+          {product.avgRating != null && (
+            <Rating value={product.avgRating} reviewCount={product.reviewCount} />
+          )}
         </div>
 
         <PriceDisplay price={product.price} salePrice={product.salePrice} size="lg" />

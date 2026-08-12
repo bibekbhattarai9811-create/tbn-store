@@ -18,12 +18,12 @@ export type Product = {
   salePrice: number | null;
   sku: string;
   stock: number;
-  brand: string;
+  brand: string | null;
   category: Category;
   images: ProductImage[];
-  rating: number;
+  avgRating: number | null;
   reviewCount: number;
-  createdAt: string;
+  createdAt: Date;
 };
 
 export type StockState = "in-stock" | "low-stock" | "out-of-stock";
