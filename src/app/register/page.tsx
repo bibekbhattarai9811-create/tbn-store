@@ -69,6 +69,14 @@ function RegisterForm() {
         <Button type="submit" size="lg" className="mt-2" disabled={isPending}>
           {isPending ? "Creating account..." : "Create account"}
         </Button>
+
+        <p className="text-center text-xs text-foreground/50">
+          By creating an account, you agree to our{" "}
+          <Link href="/privacy" className="underline hover:text-foreground">
+            Privacy Policy
+          </Link>
+          .
+        </p>
       </form>
 
       <p className="text-center text-sm text-foreground/60">

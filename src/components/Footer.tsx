@@ -58,6 +58,9 @@ export async function Footer() {
           <span className="text-sm text-foreground/60">About</span>
           <span className="text-sm text-foreground/60">Contact</span>
           <span className="text-sm text-foreground/60">Shipping & Returns</span>
+          <Link href="/privacy" className="text-sm text-foreground/60 hover:text-foreground">
+            Privacy Policy
+          </Link>
         </div>
       </div>
       <div className="border-t border-border-subtle px-4 py-4 text-center text-xs text-foreground/50 sm:px-6 lg:px-8">

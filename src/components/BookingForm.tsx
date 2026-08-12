@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState, useState } from "react";
 import { createBookingAction } from "@/app/bookings/actions";
 import { Button } from "@/components/Button";
@@ -110,6 +111,14 @@ export function BookingForm({
           <Button type="submit" size="lg" disabled={isPending}>
             {isPending ? "Submitting..." : "Submit booking request"}
           </Button>
+
+          <p className="text-xs text-foreground/50">
+            We&apos;ll use these details to contact you about this booking. See our{" "}
+            <Link href="/privacy" className="underline hover:text-foreground">
+              Privacy Policy
+            </Link>
+            .
+          </p>
         </form>
       )}
     </div>
