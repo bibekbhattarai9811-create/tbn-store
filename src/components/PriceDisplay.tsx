@@ -1,7 +1,4 @@
-const currencyFormatter = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-});
+import { formatCurrency } from "@/lib/currency";
 
 type PriceDisplayProps = {
   price: number;
@@ -14,16 +11,16 @@ export function PriceDisplay({ price, salePrice, size = "sm" }: PriceDisplayProp
   const mutedSize = size === "lg" ? "text-lg" : "text-sm";
 
   if (salePrice == null) {
-    return <span className={`font-semibold ${textSize}`}>{currencyFormatter.format(price)}</span>;
+    return <span className={`font-semibold ${textSize}`}>{formatCurrency(price)}</span>;
   }
 
   return (
     <span className="flex items-baseline gap-2">
       <span className={`font-semibold text-accent ${textSize}`}>
-        {currencyFormatter.format(salePrice)}
+        {formatCurrency(salePrice)}
       </span>
       <span className={`text-foreground/50 line-through ${mutedSize}`}>
-        {currencyFormatter.format(price)}
+        {formatCurrency(price)}
       </span>
     </span>
   );

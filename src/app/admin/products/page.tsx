@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { formatCurrency } from "@/lib/currency";
 import { Button, buttonClasses } from "@/components/Button";
 import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
 import { FeaturedToggle } from "@/components/admin/FeaturedToggle";
@@ -10,11 +11,6 @@ import { deleteProductAction } from "./actions";
 export const metadata: Metadata = {
   title: "Products",
 };
-
-const currencyFormatter = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-});
 
 export default async function AdminProductsPage(props: PageProps<"/admin/products">) {
   const searchParams = await props.searchParams;
@@ -92,9 +88,7 @@ export default async function AdminProductsPage(props: PageProps<"/admin/product
                 </td>
                 <td className="px-4 py-3">{product.category.name}</td>
                 <td className="px-4 py-3">
-                  {currencyFormatter.format(
-                    (product.salePrice ?? product.price).toNumber()
-                  )}
+                  {formatCurrency((product.salePrice ?? product.price).toNumber())}
                 </td>
                 <td className="px-4 py-3">{product.stock}</td>
                 <td className="px-4 py-3">

@@ -110,7 +110,7 @@ export function ProductForm({
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <div className="flex flex-col gap-1.5">
           <label htmlFor="price" className="text-sm font-medium">
-            Price
+            Price (Rs)
           </label>
           <input
             id="price"
@@ -126,7 +126,7 @@ export function ProductForm({
 
         <div className="flex flex-col gap-1.5">
           <label htmlFor="salePrice" className="text-sm font-medium">
-            Sale price
+            Sale price (Rs)
           </label>
           <input
             id="salePrice"
