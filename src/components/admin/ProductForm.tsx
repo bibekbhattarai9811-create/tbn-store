@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { Button } from "@/components/Button";
+import { ProductImagesField } from "@/components/admin/ProductImagesField";
 import type { ProductActionState } from "@/app/admin/products/actions";
 
 function slugify(value: string) {
@@ -25,6 +26,7 @@ type ProductFormValues = {
   stock: number;
   brand: string | null;
   categoryId: string;
+  featured: boolean;
   images: string[];
 };
 
@@ -202,20 +204,17 @@ export function ProductForm({
         </div>
       </div>
 
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="images" className="text-sm font-medium">
-          Image URLs
-        </label>
-        <textarea
-          id="images"
-          name="images"
-          rows={3}
-          placeholder="One image URL per line"
-          defaultValue={defaultValues?.images.join("\n")}
-          className="rounded-lg border border-border-subtle bg-surface px-3 py-2 text-sm outline-none focus:border-foreground"
+      <label className="flex w-fit items-center gap-2 text-sm font-medium">
+        <input
+          type="checkbox"
+          name="featured"
+          defaultChecked={defaultValues?.featured}
+          className="h-4 w-4 rounded border-border-subtle accent-accent"
         />
-        <p className="text-xs text-foreground/50">One image URL per line.</p>
-      </div>
+        Featured on homepage
+      </label>
+
+      <ProductImagesField defaultImages={defaultValues?.images} />
 
       <Button type="submit" size="lg" className="self-start" disabled={isPending}>
         {isPending ? "Saving..." : submitLabel}

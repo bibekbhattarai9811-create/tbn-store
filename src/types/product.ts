@@ -19,6 +19,7 @@ export type Product = {
   sku: string;
   stock: number;
   brand: string | null;
+  featured: boolean;
   category: Category;
   images: ProductImage[];
   avgRating: number | null;

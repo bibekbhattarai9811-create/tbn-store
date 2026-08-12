@@ -27,6 +27,7 @@ function toProduct(record: ProductWithRelations): Product {
     sku: record.sku,
     stock: record.stock,
     brand: record.brand,
+    featured: record.featured,
     category: {
       id: record.category.id,
       name: record.category.name,
@@ -94,7 +95,17 @@ export async function getProductById(id: string): Promise<Product | null> {
 
 export async function getFeaturedProducts(limit = 8): Promise<Product[]> {
   const products = await getProducts();
-  return [...products]
-    .sort((a, b) => (b.avgRating ?? 0) * b.reviewCount - (a.avgRating ?? 0) * a.reviewCount)
-    .slice(0, limit);
+  const byRating = (a: Product, b: Product) =>
+    (b.avgRating ?? 0) * b.reviewCount - (a.avgRating ?? 0) * a.reviewCount;
+
+  const featured = products.filter((product) => product.featured).sort(byRating);
+  if (featured.length >= limit) return featured.slice(0, limit);
+
+  const featuredIds = new Set(featured.map((product) => product.id));
+  const fill = products
+    .filter((product) => !featuredIds.has(product.id))
+    .sort(byRating)
+    .slice(0, limit - featured.length);
+
+  return [...featured, ...fill];
 }

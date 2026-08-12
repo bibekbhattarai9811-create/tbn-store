@@ -4,6 +4,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { Button, buttonClasses } from "@/components/Button";
 import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
+import { FeaturedToggle } from "@/components/admin/FeaturedToggle";
 import { deleteProductAction } from "./actions";
 
 export const metadata: Metadata = {
@@ -55,6 +56,7 @@ export default async function AdminProductsPage(props: PageProps<"/admin/product
         <table className="w-full text-left text-sm">
           <thead className="border-b border-border-subtle bg-surface text-xs uppercase text-foreground/50">
             <tr>
+              <th className="px-4 py-3" />
               <th className="px-4 py-3">Product</th>
               <th className="px-4 py-3">Category</th>
               <th className="px-4 py-3">Price</th>
@@ -65,6 +67,12 @@ export default async function AdminProductsPage(props: PageProps<"/admin/product
           <tbody className="divide-y divide-border-subtle">
             {products.map((product) => (
               <tr key={product.id}>
+                <td className="px-4 py-3">
+                  <FeaturedToggle
+                    productId={product.id}
+                    initialFeatured={product.featured}
+                  />
+                </td>
                 <td className="flex items-center gap-3 px-4 py-3">
                   <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-surface">
                     {product.images[0] && (
@@ -106,7 +114,7 @@ export default async function AdminProductsPage(props: PageProps<"/admin/product
             ))}
             {products.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-foreground/60">
+                <td colSpan={6} className="px-4 py-8 text-center text-foreground/60">
                   No products found.
                 </td>
               </tr>

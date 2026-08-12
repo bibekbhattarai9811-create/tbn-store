@@ -25,6 +25,10 @@ function parseSalePrice(raw: FormDataEntryValue | null): number | null | "invali
   return value;
 }
 
+function parseFeatured(raw: FormDataEntryValue | null): boolean {
+  return raw != null;
+}
+
 function parseProductForm(formData: FormData) {
   return productSchema.safeParse({
     name: formData.get("name"),
@@ -56,6 +60,7 @@ export async function createProductAction(
   }
 
   const images = parseImages(formData.get("images"));
+  const featured = parseFeatured(formData.get("featured"));
 
   let productId: string;
   try {
@@ -63,6 +68,7 @@ export async function createProductAction(
       data: {
         ...parsed.data,
         salePrice,
+        featured,
         images: {
           create: images.map((url, index) => ({
             url,
@@ -106,6 +112,7 @@ export async function updateProductAction(
   }
 
   const images = parseImages(formData.get("images"));
+  const featured = parseFeatured(formData.get("featured"));
 
   try {
     await prisma.product.update({
@@ -113,6 +120,7 @@ export async function updateProductAction(
       data: {
         ...parsed.data,
         salePrice,
+        featured,
         images: {
           deleteMany: {},
           create: images.map((url, index) => ({
@@ -136,6 +144,23 @@ export async function updateProductAction(
   revalidatePath("/admin/products");
   revalidatePath(`/admin/products/${productId}`);
   return undefined;
+}
+
+export async function toggleFeaturedAction(
+  productId: string,
+  featured: boolean
+): Promise<{ error?: string }> {
+  const session = await requireAdminAction();
+  if (!session) return { error: "Unauthorized" };
+
+  await prisma.product.update({
+    where: { id: productId },
+    data: { featured },
+  });
+
+  revalidatePath("/admin/products");
+  revalidatePath("/");
+  return {};
 }
 
 export async function deleteProductAction(productId: string): Promise<{ error?: string }> {
