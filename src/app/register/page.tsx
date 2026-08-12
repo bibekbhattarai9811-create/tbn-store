@@ -1,9 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { useActionState } from "react";
 import { Button } from "@/components/Button";
+import { registerAction } from "./actions";
 
 export default function RegisterPage() {
+  const [state, formAction, isPending] = useActionState(registerAction, undefined);
+
   return (
     <div className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center gap-6 px-4 py-16 sm:px-6">
       <div className="flex flex-col gap-1 text-center">
@@ -13,10 +17,13 @@ export default function RegisterPage() {
         </p>
       </div>
 
-      <form
-        onSubmit={(event) => event.preventDefault()}
-        className="flex flex-col gap-4"
-      >
+      <form action={formAction} className="flex flex-col gap-4">
+        {state?.error && (
+          <p className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">
+            {state.error}
+          </p>
+        )}
+
         <div className="flex flex-col gap-1.5">
           <label htmlFor="name" className="text-sm font-medium">
             Full name
@@ -61,8 +68,8 @@ export default function RegisterPage() {
           <p className="text-xs text-foreground/50">At least 8 characters.</p>
         </div>
 
-        <Button type="submit" size="lg" className="mt-2">
-          Create account
+        <Button type="submit" size="lg" className="mt-2" disabled={isPending}>
+          {isPending ? "Creating account..." : "Create account"}
         </Button>
       </form>
 

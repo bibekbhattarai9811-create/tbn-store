@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { getCategories } from "@/lib/products";
+import { auth } from "@/auth";
 
 export async function Footer() {
-  const categories = await getCategories();
+  const [categories, session] = await Promise.all([getCategories(), auth()]);
   return (
     <footer className="border-t border-border-subtle bg-surface">
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-4 py-12 sm:grid-cols-4 sm:px-6 lg:px-8">
@@ -28,12 +29,20 @@ export async function Footer() {
 
         <div className="flex flex-col gap-2">
           <span className="text-sm font-medium">Account</span>
-          <Link href="/login" className="text-sm text-foreground/60 hover:text-foreground">
-            Sign in
-          </Link>
-          <Link href="/register" className="text-sm text-foreground/60 hover:text-foreground">
-            Create account
-          </Link>
+          {session?.user ? (
+            <Link href="/account" className="text-sm text-foreground/60 hover:text-foreground">
+              Your account
+            </Link>
+          ) : (
+            <>
+              <Link href="/login" className="text-sm text-foreground/60 hover:text-foreground">
+                Sign in
+              </Link>
+              <Link href="/register" className="text-sm text-foreground/60 hover:text-foreground">
+                Create account
+              </Link>
+            </>
+          )}
           <Link href="/cart" className="text-sm text-foreground/60 hover:text-foreground">
             Cart
           </Link>

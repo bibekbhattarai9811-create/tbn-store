@@ -2,10 +2,19 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, Search, ShoppingCart, User, X } from "lucide-react";
+import { LogOut, Menu, Search, ShoppingCart, User, X } from "lucide-react";
 import type { Category } from "@/types/product";
+import { signOutAction } from "@/app/actions";
 
-export function NavbarClient({ categories }: { categories: Category[] }) {
+type SessionUser = { name?: string | null; email?: string | null } | null;
+
+export function NavbarClient({
+  categories,
+  user,
+}: {
+  categories: Category[];
+  user: SessionUser;
+}) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -41,13 +50,34 @@ export function NavbarClient({ categories }: { categories: Category[] }) {
         </div>
 
         <div className="flex items-center gap-1">
-          <Link
-            href="/login"
-            aria-label="Account"
-            className="rounded-full p-2 hover:bg-surface"
-          >
-            <User size={20} />
-          </Link>
+          {user ? (
+            <div className="flex items-center gap-1">
+              <Link
+                href="/account"
+                className="hidden items-center gap-2 rounded-full px-3 py-2 text-sm hover:bg-surface sm:flex"
+              >
+                <User size={16} />
+                {user.name?.split(" ")[0] ?? "Account"}
+              </Link>
+              <form action={signOutAction}>
+                <button
+                  type="submit"
+                  aria-label="Sign out"
+                  className="rounded-full p-2 hover:bg-surface"
+                >
+                  <LogOut size={20} />
+                </button>
+              </form>
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              aria-label="Account"
+              className="rounded-full p-2 hover:bg-surface"
+            >
+              <User size={20} />
+            </Link>
+          )}
           <Link
             href="/cart"
             aria-label="Cart"
