@@ -52,3 +52,9 @@ export const bookingSchema = z.object({
   address: z.string().trim().min(1, "Address is required").max(500),
   shopName: z.string().trim().max(150).optional(),
 });
+
+export const reviewSchema = z.object({
+  productId: z.string().min(1),
+  rating: z.coerce.number().int().min(1, "Select a rating").max(5, "Select a rating"),
+  comment: z.string().trim().max(1000).optional(),
+});

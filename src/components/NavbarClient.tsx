@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { LayoutDashboard, LogOut, Menu, Search, User, X } from "lucide-react";
+import { Heart, LayoutDashboard, LogOut, Menu, Search, User, X } from "lucide-react";
 import type { Category } from "@/types/product";
 import { signOutAction } from "@/app/actions";
 
@@ -74,6 +74,13 @@ export function NavbarClient({
                   Admin
                 </Link>
               )}
+              <Link
+                href="/wishlist"
+                aria-label="Wishlist"
+                className="rounded-full p-2 hover:bg-surface"
+              >
+                <Heart size={20} />
+              </Link>
               <Link
                 href="/account"
                 className="hidden items-center gap-2 rounded-full px-3 py-2 text-sm hover:bg-surface sm:flex"

@@ -93,6 +93,16 @@ export async function getProductById(id: string): Promise<Product | null> {
   return record ? toProduct(record) : null;
 }
 
+export async function getProductsByIds(ids: string[]): Promise<Product[]> {
+  if (ids.length === 0) return [];
+  const records = await prisma.product.findMany({
+    where: { id: { in: ids } },
+    include: productInclude,
+  });
+  const byId = new Map(records.map((record) => [record.id, toProduct(record)]));
+  return ids.map((id) => byId.get(id)).filter((product) => product != null);
+}
+
 export async function getFeaturedProducts(limit = 8): Promise<Product[]> {
   const products = await getProducts();
   const byRating = (a: Product, b: Product) =>

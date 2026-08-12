@@ -11,8 +11,12 @@ import { ProductGallery } from "@/components/ProductGallery";
 import { PriceDisplay } from "@/components/PriceDisplay";
 import { Rating } from "@/components/Rating";
 import { BookingForm } from "@/components/BookingForm";
+import { ReviewForm } from "@/components/ReviewForm";
+import { WishlistButton } from "@/components/WishlistButton";
 import { buttonClasses } from "@/components/Button";
 import { getStockState } from "@/types/product";
+import { getReviewsForProduct, getUserReviewForProduct } from "@/lib/reviews";
+import { isProductWishlisted } from "@/lib/wishlist";
 import { auth } from "@/auth";
 
 export async function generateMetadata(
@@ -69,19 +73,33 @@ export default async function ProductOrCategoryPage(
   const stock = stockLabel[stockState];
   const session = await auth();
 
+  const [reviews, userReview, wishlisted] = await Promise.all([
+    getReviewsForProduct(product.id),
+    session?.user ? getUserReviewForProduct(product.id, session.user.id) : null,
+    session?.user ? isProductWishlisted(session.user.id, product.id) : false,
+  ]);
+
   return (
     <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-10 px-4 py-10 sm:px-6 lg:grid-cols-2 lg:px-8">
       <ProductGallery images={product.images} />
 
       <div className="flex flex-col gap-5">
-        <div className="flex flex-col gap-1">
-          <span className="text-xs uppercase tracking-wide text-foreground/50">
-            {product.brand}
-          </span>
-          <h1 className="text-3xl font-semibold tracking-tight">{product.name}</h1>
-          {product.avgRating != null && (
-            <Rating value={product.avgRating} reviewCount={product.reviewCount} />
-          )}
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex flex-col gap-1">
+            <span className="text-xs uppercase tracking-wide text-foreground/50">
+              {product.brand}
+            </span>
+            <h1 className="text-3xl font-semibold tracking-tight">{product.name}</h1>
+            {product.avgRating != null && (
+              <Rating value={product.avgRating} reviewCount={product.reviewCount} />
+            )}
+          </div>
+          <WishlistButton
+            productId={product.id}
+            initialSaved={wishlisted}
+            isLoggedIn={!!session?.user}
+            callbackUrl={`/products/${product.slug}`}
+          />
         </div>
 
         <PriceDisplay price={product.price} salePrice={product.salePrice} size="lg" />
@@ -123,6 +141,53 @@ export default async function ProductOrCategoryPage(
             <dd>{product.category.name}</dd>
           </div>
         </dl>
+      </div>
+
+      <div className="col-span-full flex flex-col gap-6 border-t border-border-subtle pt-8">
+        <h2 className="text-xl font-semibold tracking-tight">Reviews</h2>
+
+        {session?.user ? (
+          <ReviewForm
+            productId={product.id}
+            defaultRating={userReview?.rating}
+            defaultComment={userReview?.comment}
+          />
+        ) : (
+          <div className="flex flex-col gap-2 rounded-2xl border border-border-subtle p-4">
+            <p className="text-sm text-foreground/70">
+              Sign in to write a review.
+            </p>
+            <Link
+              href={`/login?callbackUrl=/products/${product.slug}`}
+              className={buttonClasses("secondary", "md")}
+            >
+              Sign in to review
+            </Link>
+          </div>
+        )}
+
+        {reviews.length === 0 ? (
+          <p className="text-sm text-foreground/60">
+            No reviews yet. Be the first to share your thoughts.
+          </p>
+        ) : (
+          <ul className="flex flex-col divide-y divide-border-subtle">
+            {reviews.map((review) => (
+              <li key={review.id} className="flex flex-col gap-1.5 py-4">
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-sm font-medium">{review.user.name}</span>
+                  <span className="text-xs text-foreground/50">
+                    {review.createdAt.toLocaleDateString()}
+                  </span>
+                </div>
+                <Rating value={review.rating} />
+                {review.comment && (
+                  <p className="text-sm text-foreground/70">{review.comment}</p>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );

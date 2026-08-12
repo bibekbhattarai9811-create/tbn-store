@@ -49,6 +49,13 @@ export default async function AccountPage() {
         </div>
       </dl>
 
+      <Link
+        href="/wishlist"
+        className="text-sm font-medium text-foreground hover:underline"
+      >
+        View your wishlist →
+      </Link>
+
       <div className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold">Your bookings</h2>
         {bookings.length === 0 ? (

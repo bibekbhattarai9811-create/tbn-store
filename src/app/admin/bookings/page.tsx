@@ -8,15 +8,34 @@ export const metadata: Metadata = {
 
 const statuses = ["PENDING", "CONTACTED", "CONFIRMED", "CANCELLED"] as const;
 
+function statusHref(status: string, q: string) {
+  const params = new URLSearchParams();
+  if (status) params.set("status", status);
+  if (q) params.set("q", q);
+  const query = params.toString();
+  return query ? `/admin/bookings?${query}` : "/admin/bookings";
+}
+
 export default async function AdminBookingsPage(props: PageProps<"/admin/bookings">) {
   const searchParams = await props.searchParams;
   const status = typeof searchParams.status === "string" ? searchParams.status : "";
+  const q = typeof searchParams.q === "string" ? searchParams.q.trim() : "";
 
   const bookings = await prisma.booking.findMany({
-    where:
-      status && (statuses as readonly string[]).includes(status)
+    where: {
+      ...(status && (statuses as readonly string[]).includes(status)
         ? { status: status as (typeof statuses)[number] }
-        : undefined,
+        : {}),
+      ...(q
+        ? {
+            OR: [
+              { fullName: { contains: q, mode: "insensitive" } },
+              { phone: { contains: q, mode: "insensitive" } },
+              { email: { contains: q, mode: "insensitive" } },
+            ],
+          }
+        : {}),
+    },
     orderBy: { createdAt: "desc" },
     include: { product: { select: { name: true, slug: true } } },
   });
@@ -25,9 +44,20 @@ export default async function AdminBookingsPage(props: PageProps<"/admin/booking
     <div className="flex flex-col gap-6">
       <h1 className="text-2xl font-semibold tracking-tight">Bookings</h1>
 
+      <form className="max-w-sm">
+        {status && <input type="hidden" name="status" value={status} />}
+        <input
+          type="search"
+          name="q"
+          defaultValue={q}
+          placeholder="Search by name, phone, or email"
+          className="h-11 w-full rounded-full border border-border-subtle bg-surface px-4 text-sm outline-none focus:border-foreground"
+        />
+      </form>
+
       <div className="flex flex-wrap gap-2">
         <Link
-          href="/admin/bookings"
+          href={statusHref("", q)}
           className={`rounded-full px-3 py-1.5 text-sm ${
             !status ? "bg-foreground text-background" : "bg-surface"
           }`}
@@ -37,7 +67,7 @@ export default async function AdminBookingsPage(props: PageProps<"/admin/booking
         {statuses.map((s) => (
           <Link
             key={s}
-            href={`/admin/bookings?status=${s}`}
+            href={statusHref(s, q)}
             className={`rounded-full px-3 py-1.5 text-sm ${
               status === s ? "bg-foreground text-background" : "bg-surface"
             }`}
