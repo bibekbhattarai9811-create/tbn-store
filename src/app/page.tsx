@@ -14,7 +14,7 @@ export default async function Home() {
     <div className="flex flex-col">
       <section className="relative flex min-h-[70vh] items-center overflow-hidden bg-surface">
         <Image
-          src="https://picsum.photos/seed/aurora-hero/1600/900"
+          src="https://picsum.photos/seed/tbn-store-hero/1600/900"
           alt=""
           fill
           priority
@@ -22,11 +22,11 @@ export default async function Home() {
         />
         <div className="relative mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 sm:px-6 lg:px-8">
           <h1 className="max-w-lg text-4xl font-semibold tracking-tight sm:text-5xl">
-            Discover something new
+            Adorable styles for little ones
           </h1>
           <p className="max-w-md text-lg text-foreground/70">
-            Shop our latest collection of shoes, apparel, electronics, and
-            home goods.
+            Cute, comfortable kids clothing — dresses, hoodies, tees, and
+            outerwear for every little adventure.
           </p>
           <div>
             <Link href="/products" className={buttonClasses("primary", "lg")}>

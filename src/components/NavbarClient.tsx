@@ -25,8 +25,12 @@ export function NavbarClient({
     <header className="sticky top-0 z-40 border-b border-border-subtle bg-background/95 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-8">
-          <Link href="/" className="text-lg font-semibold tracking-tight">
-            Aurora
+          <Link
+            href="/"
+            className="flex items-baseline gap-1 text-lg font-bold tracking-tight"
+          >
+            TBN
+            <span className="font-serif text-base italic text-accent">Store</span>
           </Link>
           <nav className="hidden items-center gap-6 text-sm md:flex">
             <Link href="/products" className="hover:text-foreground/70">

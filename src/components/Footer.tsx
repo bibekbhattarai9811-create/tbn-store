@@ -8,9 +8,12 @@ export async function Footer() {
     <footer className="border-t border-border-subtle bg-surface">
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-4 py-12 sm:grid-cols-4 sm:px-6 lg:px-8">
         <div className="col-span-2 flex flex-col gap-2 sm:col-span-1">
-          <span className="text-lg font-semibold tracking-tight">Aurora</span>
+          <span className="flex items-baseline gap-1 text-lg font-bold tracking-tight">
+            TBN
+            <span className="font-serif text-base italic text-accent">Store</span>
+          </span>
           <p className="text-sm text-foreground/60">
-            Thoughtfully made goods for everyday life.
+            Cute, comfortable clothing for every little adventure.
           </p>
         </div>
 
@@ -53,7 +56,7 @@ export async function Footer() {
         </div>
       </div>
       <div className="border-t border-border-subtle px-4 py-4 text-center text-xs text-foreground/50 sm:px-6 lg:px-8">
-        © {new Date().getFullYear()} Aurora. All rights reserved.
+        © {new Date().getFullYear()} TBN Store. All rights reserved.
       </div>
     </footer>
   );

@@ -19,7 +19,7 @@ export function PriceDisplay({ price, salePrice, size = "sm" }: PriceDisplayProp
 
   return (
     <span className="flex items-baseline gap-2">
-      <span className={`font-semibold text-danger ${textSize}`}>
+      <span className={`font-semibold text-accent ${textSize}`}>
         {currencyFormatter.format(salePrice)}
       </span>
       <span className={`text-foreground/50 line-through ${mutedSize}`}>

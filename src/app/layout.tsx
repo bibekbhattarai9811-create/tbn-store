@@ -16,10 +16,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Aurora — Thoughtfully made goods",
-    template: "%s | Aurora",
+    default: "TBN Store — Kids Clothing Store",
+    template: "%s | TBN Store",
   },
-  description: "Shop shoes, apparel, electronics, and home goods at Aurora.",
+  description:
+    "Adorable, comfortable kids clothing at TBN Store — dresses, hoodies, tees, outerwear, and more.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

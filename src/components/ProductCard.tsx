@@ -32,7 +32,7 @@ export function ProductCard({ product }: { product: Product }) {
           />
         )}
         {product.salePrice != null && stockState !== "out-of-stock" && (
-          <span className="absolute left-3 top-3 rounded-full bg-danger px-2.5 py-1 text-xs font-medium text-white">
+          <span className="absolute left-3 top-3 rounded-full bg-accent px-2.5 py-1 text-xs font-medium text-accent-foreground">
             Sale
           </span>
         )}
