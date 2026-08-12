@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { LayoutDashboard, LogOut, Menu, Search, ShoppingCart, User, X } from "lucide-react";
+import { LayoutDashboard, LogOut, Menu, Search, User, X } from "lucide-react";
 import type { Category } from "@/types/product";
 import { signOutAction } from "@/app/actions";
 
@@ -91,13 +91,6 @@ export function NavbarClient({
               <User size={20} />
             </Link>
           )}
-          <Link
-            href="/cart"
-            aria-label="Cart"
-            className="rounded-full p-2 hover:bg-surface"
-          >
-            <ShoppingCart size={20} />
-          </Link>
           <button
             type="button"
             aria-label="Toggle menu"

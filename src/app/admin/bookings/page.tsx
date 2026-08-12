@@ -3,43 +3,31 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
-  title: "Orders",
+  title: "Bookings",
 };
 
-const currencyFormatter = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-});
+const statuses = ["PENDING", "CONTACTED", "CONFIRMED", "CANCELLED"] as const;
 
-const statuses = [
-  "PENDING",
-  "PAID",
-  "PROCESSING",
-  "SHIPPED",
-  "DELIVERED",
-  "CANCELLED",
-] as const;
-
-export default async function AdminOrdersPage(props: PageProps<"/admin/orders">) {
+export default async function AdminBookingsPage(props: PageProps<"/admin/bookings">) {
   const searchParams = await props.searchParams;
   const status = typeof searchParams.status === "string" ? searchParams.status : "";
 
-  const orders = await prisma.order.findMany({
+  const bookings = await prisma.booking.findMany({
     where:
       status && (statuses as readonly string[]).includes(status)
         ? { status: status as (typeof statuses)[number] }
         : undefined,
     orderBy: { createdAt: "desc" },
-    include: { user: { select: { name: true, email: true } } },
+    include: { product: { select: { name: true, slug: true } } },
   });
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Orders</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">Bookings</h1>
 
       <div className="flex flex-wrap gap-2">
         <Link
-          href="/admin/orders"
+          href="/admin/bookings"
           className={`rounded-full px-3 py-1.5 text-sm ${
             !status ? "bg-foreground text-background" : "bg-surface"
           }`}
@@ -49,7 +37,7 @@ export default async function AdminOrdersPage(props: PageProps<"/admin/orders">)
         {statuses.map((s) => (
           <Link
             key={s}
-            href={`/admin/orders?status=${s}`}
+            href={`/admin/bookings?status=${s}`}
             className={`rounded-full px-3 py-1.5 text-sm ${
               status === s ? "bg-foreground text-background" : "bg-surface"
             }`}
@@ -63,45 +51,37 @@ export default async function AdminOrdersPage(props: PageProps<"/admin/orders">)
         <table className="w-full text-left text-sm">
           <thead className="border-b border-border-subtle bg-surface text-xs uppercase text-foreground/50">
             <tr>
-              <th className="px-4 py-3">Order</th>
               <th className="px-4 py-3">Customer</th>
+              <th className="px-4 py-3">Product</th>
+              <th className="px-4 py-3">Qty</th>
               <th className="px-4 py-3">Date</th>
               <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Total</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border-subtle">
-            {orders.map((order) => (
-              <tr key={order.id}>
+            {bookings.map((booking) => (
+              <tr key={booking.id}>
                 <td className="px-4 py-3">
                   <Link
-                    href={`/admin/orders/${order.id}`}
-                    className="font-medium hover:underline"
+                    href={`/admin/bookings/${booking.id}`}
+                    className="flex flex-col hover:underline"
                   >
-                    #{order.id.slice(-8).toUpperCase()}
+                    <span className="font-medium">{booking.fullName}</span>
+                    <span className="text-xs text-foreground/50">{booking.phone}</span>
                   </Link>
                 </td>
-                <td className="px-4 py-3">
-                  <div className="flex flex-col">
-                    <span>{order.user.name}</span>
-                    <span className="text-xs text-foreground/50">
-                      {order.user.email}
-                    </span>
-                  </div>
-                </td>
+                <td className="px-4 py-3">{booking.product.name}</td>
+                <td className="px-4 py-3">{booking.quantity}</td>
                 <td className="px-4 py-3 text-foreground/60">
-                  {order.createdAt.toLocaleDateString()}
+                  {booking.createdAt.toLocaleDateString()}
                 </td>
-                <td className="px-4 py-3">{order.status}</td>
-                <td className="px-4 py-3 font-medium">
-                  {currencyFormatter.format(order.totalAmount.toNumber())}
-                </td>
+                <td className="px-4 py-3">{booking.status}</td>
               </tr>
             ))}
-            {orders.length === 0 && (
+            {bookings.length === 0 && (
               <tr>
                 <td colSpan={5} className="px-4 py-8 text-center text-foreground/60">
-                  No orders found.
+                  No bookings found.
                 </td>
               </tr>
             )}

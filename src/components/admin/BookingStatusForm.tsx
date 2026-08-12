@@ -2,25 +2,18 @@
 
 import { useActionState } from "react";
 import { Button } from "@/components/Button";
-import type { OrderActionState } from "@/app/admin/orders/actions";
+import type { BookingActionState } from "@/app/admin/bookings/actions";
 
-const statuses = [
-  "PENDING",
-  "PAID",
-  "PROCESSING",
-  "SHIPPED",
-  "DELIVERED",
-  "CANCELLED",
-] as const;
+const statuses = ["PENDING", "CONTACTED", "CONFIRMED", "CANCELLED"] as const;
 
-export function OrderStatusForm({
+export function BookingStatusForm({
   action,
   currentStatus,
 }: {
   action: (
-    prevState: OrderActionState,
+    prevState: BookingActionState,
     formData: FormData
-  ) => Promise<OrderActionState>;
+  ) => Promise<BookingActionState>;
   currentStatus: string;
 }) {
   const [state, formAction, isPending] = useActionState(action, undefined);
@@ -29,7 +22,7 @@ export function OrderStatusForm({
     <form action={formAction} className="flex items-end gap-3">
       <div className="flex flex-col gap-1.5">
         <label htmlFor="status" className="text-sm font-medium">
-          Order status
+          Booking status
         </label>
         <select
           id="status"

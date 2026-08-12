@@ -38,3 +38,17 @@ export const categorySchema = z.object({
     .max(100)
     .regex(slugPattern, "Use lowercase letters, numbers, and hyphens only"),
 });
+
+export const bookingSchema = z.object({
+  productId: z.string().min(1),
+  quantity: z.coerce.number().int().positive("Quantity must be at least 1"),
+  fullName: z.string().trim().min(1, "Full name is required").max(150),
+  phone: z
+    .string()
+    .trim()
+    .min(6, "Enter a valid contact number")
+    .max(30, "Enter a valid contact number"),
+  email: z.union([z.email("Enter a valid email address"), z.literal("")]).optional(),
+  address: z.string().trim().min(1, "Address is required").max(500),
+  shopName: z.string().trim().max(150).optional(),
+});

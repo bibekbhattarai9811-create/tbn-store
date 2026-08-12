@@ -7,11 +7,6 @@ export const metadata: Metadata = {
   title: "Customer detail",
 };
 
-const currencyFormatter = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-});
-
 export default async function AdminCustomerDetailPage(
   props: PageProps<"/admin/customers/[id]">
 ) {
@@ -19,7 +14,9 @@ export default async function AdminCustomerDetailPage(
 
   const user = await prisma.user.findUnique({
     where: { id },
-    include: { orders: { orderBy: { createdAt: "desc" } } },
+    include: {
+      bookings: { orderBy: { createdAt: "desc" }, include: { product: true } },
+    },
   });
 
   if (!user) {
@@ -45,28 +42,24 @@ export default async function AdminCustomerDetailPage(
       </dl>
 
       <div className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold">Orders</h2>
-        {user.orders.length === 0 ? (
-          <p className="text-sm text-foreground/60">No orders yet.</p>
+        <h2 className="text-lg font-semibold">Bookings</h2>
+        {user.bookings.length === 0 ? (
+          <p className="text-sm text-foreground/60">No bookings yet.</p>
         ) : (
           <ul className="flex flex-col divide-y divide-border-subtle rounded-2xl border border-border-subtle">
-            {user.orders.map((order) => (
-              <li key={order.id}>
+            {user.bookings.map((booking) => (
+              <li key={booking.id}>
                 <Link
-                  href={`/admin/orders/${order.id}`}
+                  href={`/admin/bookings/${booking.id}`}
                   className="flex items-center justify-between gap-4 p-4 text-sm hover:bg-surface"
                 >
                   <div className="flex flex-col">
-                    <span className="font-medium">
-                      Order #{order.id.slice(-8).toUpperCase()}
-                    </span>
+                    <span className="font-medium">{booking.product.name}</span>
                     <span className="text-xs text-foreground/50">
-                      {order.createdAt.toLocaleDateString()} · {order.status}
+                      {booking.createdAt.toLocaleDateString()} · {booking.status}
                     </span>
                   </div>
-                  <span className="font-semibold">
-                    {currencyFormatter.format(order.totalAmount.toNumber())}
-                  </span>
+                  <span className="font-semibold">Qty {booking.quantity}</span>
                 </Link>
               </li>
             ))}

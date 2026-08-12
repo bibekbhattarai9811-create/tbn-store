@@ -43,9 +43,6 @@ export async function Footer() {
               </Link>
             </>
           )}
-          <Link href="/cart" className="text-sm text-foreground/60 hover:text-foreground">
-            Cart
-          </Link>
         </div>
 
         <div className="flex flex-col gap-2">

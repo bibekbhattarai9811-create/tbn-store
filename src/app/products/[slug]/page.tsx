@@ -9,9 +9,9 @@ import { ProductGrid } from "@/components/ProductGrid";
 import { ProductGallery } from "@/components/ProductGallery";
 import { PriceDisplay } from "@/components/PriceDisplay";
 import { Rating } from "@/components/Rating";
-import { QuantitySelector } from "@/components/QuantitySelector";
-import { Button } from "@/components/Button";
+import { BookingForm } from "@/components/BookingForm";
 import { getStockState } from "@/types/product";
+import { auth } from "@/auth";
 
 export async function generateMetadata(
   props: PageProps<"/products/[slug]">
@@ -65,6 +65,7 @@ export default async function ProductOrCategoryPage(
 
   const stockState = getStockState(product.stock);
   const stock = stockLabel[stockState];
+  const session = await auth();
 
   return (
     <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-10 px-4 py-10 sm:px-6 lg:grid-cols-2 lg:px-8">
@@ -89,16 +90,11 @@ export default async function ProductOrCategoryPage(
           {product.description}
         </p>
 
-        <div className="flex items-center gap-4">
-          <QuantitySelector max={Math.max(product.stock, 1)} />
-          <Button
-            size="lg"
-            className="flex-1"
-            disabled={stockState === "out-of-stock"}
-          >
-            {stockState === "out-of-stock" ? "Out of stock" : "Add to cart"}
-          </Button>
-        </div>
+        <BookingForm
+          productId={product.id}
+          defaultName={session?.user?.name ?? undefined}
+          defaultEmail={session?.user?.email ?? undefined}
+        />
 
         <dl className="grid grid-cols-2 gap-3 border-t border-border-subtle pt-5 text-sm">
           <div>

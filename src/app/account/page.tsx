@@ -10,11 +10,6 @@ export const metadata: Metadata = {
   title: "Your account",
 };
 
-const currencyFormatter = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-});
-
 export default async function AccountPage() {
   const session = await auth();
   if (!session?.user) {
@@ -23,10 +18,11 @@ export default async function AccountPage() {
 
   const { user } = session;
 
-  const orders = await prisma.order.findMany({
+  const bookings = await prisma.booking.findMany({
     where: { userId: user.id },
     orderBy: { createdAt: "desc" },
     take: 10,
+    include: { product: { select: { name: true } } },
   });
 
   return (
@@ -54,30 +50,26 @@ export default async function AccountPage() {
       </dl>
 
       <div className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold">Order history</h2>
-        {orders.length === 0 ? (
+        <h2 className="text-lg font-semibold">Your bookings</h2>
+        {bookings.length === 0 ? (
           <p className="text-sm text-foreground/60">
-            You haven&apos;t placed any orders yet.
+            You haven&apos;t booked any products yet.
           </p>
         ) : (
           <ul className="flex flex-col divide-y divide-border-subtle rounded-2xl border border-border-subtle">
-            {orders.map((order) => (
-              <li key={order.id}>
+            {bookings.map((booking) => (
+              <li key={booking.id}>
                 <Link
-                  href={`/orders/${order.id}`}
+                  href={`/bookings/${booking.id}`}
                   className="flex items-center justify-between gap-4 p-4 text-sm hover:bg-surface"
                 >
                   <div className="flex flex-col">
-                    <span className="font-medium">
-                      Order #{order.id.slice(-8).toUpperCase()}
-                    </span>
+                    <span className="font-medium">{booking.product.name}</span>
                     <span className="text-xs text-foreground/50">
-                      {order.createdAt.toLocaleDateString()} · {order.status}
+                      {booking.createdAt.toLocaleDateString()} · Qty {booking.quantity}
                     </span>
                   </div>
-                  <span className="font-semibold">
-                    {currencyFormatter.format(order.totalAmount.toNumber())}
-                  </span>
+                  <span className="font-semibold">{booking.status}</span>
                 </Link>
               </li>
             ))}

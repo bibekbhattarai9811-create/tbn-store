@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default async function AdminCustomersPage() {
   const users = await prisma.user.findMany({
     orderBy: { createdAt: "desc" },
-    include: { _count: { select: { orders: true } } },
+    include: { _count: { select: { bookings: true } } },
   });
 
   return (
@@ -23,7 +23,7 @@ export default async function AdminCustomersPage() {
               <th className="px-4 py-3">Name</th>
               <th className="px-4 py-3">Email</th>
               <th className="px-4 py-3">Role</th>
-              <th className="px-4 py-3">Orders</th>
+              <th className="px-4 py-3">Bookings</th>
               <th className="px-4 py-3">Joined</th>
             </tr>
           </thead>
@@ -40,7 +40,7 @@ export default async function AdminCustomersPage() {
                 </td>
                 <td className="px-4 py-3 text-foreground/60">{user.email}</td>
                 <td className="px-4 py-3">{user.role}</td>
-                <td className="px-4 py-3">{user._count.orders}</td>
+                <td className="px-4 py-3">{user._count.bookings}</td>
                 <td className="px-4 py-3 text-foreground/60">
                   {user.createdAt.toLocaleDateString()}
                 </td>
