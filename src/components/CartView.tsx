@@ -92,13 +92,15 @@ export function CartView({
                   href={`/products/${line.product.slug}`}
                   className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-surface"
                 >
-                  <Image
-                    src={line.product.images[0].url}
-                    alt={line.product.images[0].altText}
-                    fill
-                    sizes="96px"
-                    className="object-cover"
-                  />
+                  {line.product.images[0] && (
+                    <Image
+                      src={line.product.images[0].url}
+                      alt={line.product.images[0].altText}
+                      fill
+                      sizes="96px"
+                      className="object-cover"
+                    />
+                  )}
                 </Link>
                 <div className="flex flex-1 flex-col justify-between">
                   <div className="flex items-start justify-between gap-2">

@@ -2,18 +2,25 @@ import { auth } from "@/auth";
 
 export default auth((req) => {
   const isLoggedIn = !!req.auth;
+  const isAdmin = req.auth?.user?.role === "ADMIN";
   const { pathname, origin } = req.nextUrl;
 
-  if (
-    !isLoggedIn &&
-    (pathname.startsWith("/account") || pathname.startsWith("/orders"))
-  ) {
+  const requiresAuth =
+    pathname.startsWith("/account") ||
+    pathname.startsWith("/orders") ||
+    pathname.startsWith("/admin");
+
+  if (!isLoggedIn && requiresAuth) {
     const loginUrl = new URL("/login", origin);
     loginUrl.searchParams.set("callbackUrl", pathname);
     return Response.redirect(loginUrl);
   }
+
+  if (isLoggedIn && pathname.startsWith("/admin") && !isAdmin) {
+    return Response.redirect(new URL("/", origin));
+  }
 });
 
 export const config = {
-  matcher: ["/account/:path*", "/orders/:path*"],
+  matcher: ["/account/:path*", "/orders/:path*", "/admin/:path*"],
 };

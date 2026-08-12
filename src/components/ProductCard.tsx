@@ -22,13 +22,15 @@ export function ProductCard({ product }: { product: Product }) {
       className="group flex flex-col gap-3"
     >
       <div className="relative aspect-square overflow-hidden rounded-2xl bg-surface">
-        <Image
-          src={image.url}
-          alt={image.altText}
-          fill
-          sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
-          className="object-cover transition-transform duration-300 group-hover:scale-105"
-        />
+        {image && (
+          <Image
+            src={image.url}
+            alt={image.altText}
+            fill
+            sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+        )}
         {product.salePrice != null && stockState !== "out-of-stock" && (
           <span className="absolute left-3 top-3 rounded-full bg-danger px-2.5 py-1 text-xs font-medium text-white">
             Sale

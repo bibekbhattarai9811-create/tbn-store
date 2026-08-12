@@ -11,14 +11,16 @@ export function ProductGallery({ images }: { images: ProductImage[] }) {
   return (
     <div className="flex flex-col gap-3">
       <div className="relative aspect-square overflow-hidden rounded-2xl bg-surface">
-        <Image
-          src={active.url}
-          alt={active.altText}
-          fill
-          sizes="(min-width: 1024px) 50vw, 100vw"
-          priority
-          className="object-cover"
-        />
+        {active && (
+          <Image
+            src={active.url}
+            alt={active.altText}
+            fill
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            priority
+            className="object-cover"
+          />
+        )}
       </div>
       {images.length > 1 && (
         <div className="flex gap-3">

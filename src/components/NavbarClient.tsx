@@ -2,11 +2,15 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { LogOut, Menu, Search, ShoppingCart, User, X } from "lucide-react";
+import { LayoutDashboard, LogOut, Menu, Search, ShoppingCart, User, X } from "lucide-react";
 import type { Category } from "@/types/product";
 import { signOutAction } from "@/app/actions";
 
-type SessionUser = { name?: string | null; email?: string | null } | null;
+type SessionUser = {
+  name?: string | null;
+  email?: string | null;
+  role?: "CUSTOMER" | "ADMIN";
+} | null;
 
 export function NavbarClient({
   categories,
@@ -52,6 +56,15 @@ export function NavbarClient({
         <div className="flex items-center gap-1">
           {user ? (
             <div className="flex items-center gap-1">
+              {user.role === "ADMIN" && (
+                <Link
+                  href="/admin"
+                  className="hidden items-center gap-2 rounded-full px-3 py-2 text-sm hover:bg-surface sm:flex"
+                >
+                  <LayoutDashboard size={16} />
+                  Admin
+                </Link>
+              )}
               <Link
                 href="/account"
                 className="hidden items-center gap-2 rounded-full px-3 py-2 text-sm hover:bg-surface sm:flex"
