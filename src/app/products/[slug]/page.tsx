@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   getCategoryBySlug,
@@ -10,6 +11,7 @@ import { ProductGallery } from "@/components/ProductGallery";
 import { PriceDisplay } from "@/components/PriceDisplay";
 import { Rating } from "@/components/Rating";
 import { BookingForm } from "@/components/BookingForm";
+import { buttonClasses } from "@/components/Button";
 import { getStockState } from "@/types/product";
 import { auth } from "@/auth";
 
@@ -90,11 +92,26 @@ export default async function ProductOrCategoryPage(
           {product.description}
         </p>
 
-        <BookingForm
-          productId={product.id}
-          defaultName={session?.user?.name ?? undefined}
-          defaultEmail={session?.user?.email ?? undefined}
-        />
+        {session?.user ? (
+          <BookingForm
+            productId={product.id}
+            defaultName={session.user.name ?? undefined}
+            defaultEmail={session.user.email ?? undefined}
+          />
+        ) : (
+          <div className="flex flex-col gap-2 rounded-2xl border border-border-subtle p-4">
+            <p className="text-sm text-foreground/70">
+              Sign in to book this product. We&apos;ll contact you to confirm
+              details.
+            </p>
+            <Link
+              href={`/login?callbackUrl=/products/${product.slug}`}
+              className={buttonClasses("primary", "lg")}
+            >
+              Sign in to book
+            </Link>
+          </div>
+        )}
 
         <dl className="grid grid-cols-2 gap-3 border-t border-border-subtle pt-5 text-sm">
           <div>

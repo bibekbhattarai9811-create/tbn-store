@@ -5,6 +5,7 @@ import { AuthError } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import { signIn } from "@/auth";
 import { registerSchema } from "@/lib/validation";
+import { getSafeCallbackUrl } from "@/lib/safe-redirect";
 
 export type RegisterActionState = { error?: string } | undefined;
 
@@ -39,11 +40,13 @@ export async function registerAction(
     },
   });
 
+  const redirectTo = getSafeCallbackUrl(formData.get("callbackUrl"), "/account");
+
   try {
     await signIn("credentials", {
       email: parsed.data.email,
       password: parsed.data.password,
-      redirectTo: "/account",
+      redirectTo,
     });
   } catch (error) {
     if (error instanceof AuthError) {

@@ -91,8 +91,8 @@ model Booking {
   address   String
   shopName  String?
   status    BookingStatus @default(PENDING)
-  userId    String?
-  user      User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId    String
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
 

@@ -11,6 +11,11 @@ export async function createBookingAction(
   _prevState: BookingActionState,
   formData: FormData
 ): Promise<BookingActionState> {
+  const session = await auth();
+  if (!session?.user) {
+    return { error: "Please sign in to book a product." };
+  }
+
   const parsed = bookingSchema.safeParse({
     productId: formData.get("productId"),
     quantity: formData.get("quantity"),
@@ -33,8 +38,6 @@ export async function createBookingAction(
     return { error: "This product is no longer available." };
   }
 
-  const session = await auth();
-
   const booking = await prisma.booking.create({
     data: {
       productId: parsed.data.productId,
@@ -44,7 +47,7 @@ export async function createBookingAction(
       email: parsed.data.email || null,
       address: parsed.data.address,
       shopName: parsed.data.shopName || null,
-      userId: session?.user?.id ?? null,
+      userId: session.user.id,
     },
   });
 

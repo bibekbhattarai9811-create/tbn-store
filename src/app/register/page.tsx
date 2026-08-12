@@ -1,23 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { Suspense, useActionState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/Button";
 import { registerAction } from "./actions";
 
-export default function RegisterPage() {
+function RegisterForm() {
   const [state, formAction, isPending] = useActionState(registerAction, undefined);
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") ?? "";
 
   return (
-    <div className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center gap-6 px-4 py-16 sm:px-6">
-      <div className="flex flex-col gap-1 text-center">
-        <h1 className="text-2xl font-semibold tracking-tight">Create account</h1>
-        <p className="text-sm text-foreground/60">
-          Join us to track orders and save your favorites.
-        </p>
-      </div>
-
+    <>
       <form action={formAction} className="flex flex-col gap-4">
+        <input type="hidden" name="callbackUrl" value={callbackUrl} />
+
         {state?.error && (
           <p className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">
             {state.error}
@@ -75,10 +73,34 @@ export default function RegisterPage() {
 
       <p className="text-center text-sm text-foreground/60">
         Already have an account?{" "}
-        <Link href="/login" className="font-medium text-foreground hover:underline">
+        <Link
+          href={
+            callbackUrl
+              ? `/login?callbackUrl=${encodeURIComponent(callbackUrl)}`
+              : "/login"
+          }
+          className="font-medium text-foreground hover:underline"
+        >
           Sign in
         </Link>
       </p>
+    </>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <div className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center gap-6 px-4 py-16 sm:px-6">
+      <div className="flex flex-col gap-1 text-center">
+        <h1 className="text-2xl font-semibold tracking-tight">Create account</h1>
+        <p className="text-sm text-foreground/60">
+          Join us to book products and track your requests.
+        </p>
+      </div>
+
+      <Suspense fallback={null}>
+        <RegisterForm />
+      </Suspense>
     </div>
   );
 }
