@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getCategories } from "@/lib/products";
 import { auth } from "@/auth";
 
@@ -8,10 +9,14 @@ export async function Footer() {
     <footer className="border-t border-border-subtle bg-surface">
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-8 px-4 py-12 sm:grid-cols-4 sm:px-6 lg:px-8">
         <div className="col-span-2 flex flex-col gap-2 sm:col-span-1">
-          <span className="flex items-baseline gap-1 text-lg font-bold tracking-tight">
-            TBN
-            <span className="font-serif text-base italic text-accent">Store</span>
-          </span>
+          <Image
+            src="/logo.png"
+            alt="TBN Store"
+            width={1254}
+            height={1254}
+            sizes="80px"
+            className="h-20 w-20 object-contain"
+          />
           <p className="text-sm text-foreground/60">
             Cute, comfortable clothing for every little adventure.
           </p>
