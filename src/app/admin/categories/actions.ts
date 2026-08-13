@@ -15,6 +15,7 @@ function parseCategoryForm(formData: FormData) {
     name: formData.get("name"),
     slug: formData.get("slug"),
     position: formData.get("position"),
+    imageUrl: formData.get("imageUrl"),
   });
 }
 

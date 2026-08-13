@@ -10,6 +10,7 @@ const links = [
   { href: "/admin/bookings", label: "Bookings" },
   { href: "/admin/reviews", label: "Reviews" },
   { href: "/admin/customers", label: "Customers" },
+  { href: "/admin/settings", label: "Settings" },
 ];
 
 export function AdminSidebar() {

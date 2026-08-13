@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { Button } from "@/components/Button";
+import { SingleImageField } from "@/components/admin/SingleImageField";
 import type { CategoryActionState } from "@/app/admin/categories/actions";
 
 function slugify(value: string) {
@@ -24,7 +25,12 @@ export function CategoryForm({
     prevState: CategoryActionState,
     formData: FormData
   ) => Promise<CategoryActionState>;
-  defaultValues?: { name: string; slug: string; position?: number };
+  defaultValues?: {
+    name: string;
+    slug: string;
+    position?: number;
+    imageUrl?: string | null;
+  };
   submitLabel: string;
 }) {
   const [state, formAction, isPending] = useActionState(action, undefined);
@@ -73,6 +79,12 @@ export function CategoryForm({
           className={inputClasses}
         />
       </div>
+
+      <SingleImageField
+        name="imageUrl"
+        label="Category image"
+        defaultUrl={defaultValues?.imageUrl ?? ""}
+      />
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="position" className="text-sm font-medium">

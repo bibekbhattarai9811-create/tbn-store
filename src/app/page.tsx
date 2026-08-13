@@ -3,18 +3,22 @@ import Image from "next/image";
 import { buttonClasses } from "@/components/Button";
 import { ProductGrid } from "@/components/ProductGrid";
 import { getCategories, getFeaturedProducts } from "@/lib/products";
+import { getSiteSettings } from "@/lib/settings";
 
 export default async function Home() {
-  const [categories, featuredProducts] = await Promise.all([
+  const [categories, featuredProducts, settings] = await Promise.all([
     getCategories(),
     getFeaturedProducts(8),
+    getSiteSettings(),
   ]);
+  const heroImageUrl =
+    settings?.heroImageUrl || "https://picsum.photos/seed/tbn-store-hero/1600/900";
 
   return (
     <div className="flex flex-col">
       <section className="relative flex min-h-[70vh] items-center overflow-hidden bg-surface">
         <Image
-          src="https://picsum.photos/seed/tbn-store-hero/1600/900"
+          src={heroImageUrl}
           alt=""
           fill
           priority
@@ -46,7 +50,10 @@ export default async function Home() {
             >
               <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-surface">
                 <Image
-                  src={`https://picsum.photos/seed/${category.slug}/300/300`}
+                  src={
+                    category.imageUrl ||
+                    `https://picsum.photos/seed/${category.slug}/300/300`
+                  }
                   alt=""
                   fill
                   sizes="20vw"

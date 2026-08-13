@@ -38,6 +38,10 @@ export const categorySchema = z.object({
     .max(100)
     .regex(slugPattern, "Use lowercase letters, numbers, and hyphens only"),
   position: z.coerce.number().int().default(0),
+  imageUrl: z
+    .union([z.url(), z.literal("")])
+    .optional()
+    .transform((value) => (value ? value : null)),
 });
 
 export const bookingSchema = z.object({
