@@ -53,14 +53,18 @@ export function NavbarClient({
           </nav>
         </div>
 
-        <div className="hidden flex-1 max-w-sm items-center gap-2 rounded-full border border-border-subtle bg-surface px-3 py-1.5 sm:flex">
+        <form
+          action="/products"
+          className="hidden flex-1 max-w-sm items-center gap-2 rounded-full border border-border-subtle bg-surface px-3 py-1.5 sm:flex"
+        >
           <Search size={16} className="text-foreground/50" />
           <input
             type="search"
+            name="q"
             placeholder="Search products"
             className="w-full bg-transparent text-sm outline-none placeholder:text-foreground/40"
           />
-        </div>
+        </form>
 
         <div className="flex items-center gap-1">
           {user ? (
@@ -120,6 +124,30 @@ export function NavbarClient({
 
       {menuOpen && (
         <nav className="flex flex-col gap-1 border-t border-border-subtle px-4 py-3 md:hidden">
+          <form
+            action="/products"
+            className="mb-2 flex items-center gap-2 rounded-full border border-border-subtle bg-surface px-3 py-1.5 sm:hidden"
+          >
+            <Search size={16} className="text-foreground/50" />
+            <input
+              type="search"
+              name="q"
+              placeholder="Search products"
+              className="w-full bg-transparent text-sm outline-none placeholder:text-foreground/40"
+            />
+          </form>
+
+          {user?.role === "ADMIN" && (
+            <Link
+              href="/admin"
+              className="flex items-center gap-2 rounded-lg px-2 py-2 text-sm hover:bg-surface sm:hidden"
+              onClick={() => setMenuOpen(false)}
+            >
+              <LayoutDashboard size={16} />
+              Admin
+            </Link>
+          )}
+
           <Link
             href="/products"
             className="rounded-lg px-2 py-2 text-sm hover:bg-surface"
