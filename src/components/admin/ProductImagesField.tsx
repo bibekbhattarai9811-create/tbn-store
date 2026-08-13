@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { Plus, X } from "lucide-react";
+import { useRef, useState } from "react";
+import type { PutBlobResult } from "@vercel/blob";
+import { Plus, Upload, X } from "lucide-react";
 
 export function ProductImagesField({
   defaultImages = [],
@@ -11,6 +12,9 @@ export function ProductImagesField({
   const [urls, setUrls] = useState<string[]>(
     defaultImages.length ? defaultImages : [""]
   );
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   function updateUrl(index: number, value: string) {
     setUrls((prev) => prev.map((url, i) => (i === index ? value : url)));
@@ -22,6 +26,30 @@ export function ProductImagesField({
 
   function addRow() {
     setUrls((prev) => [...prev, ""]);
+  }
+
+  async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+
+    setIsUploading(true);
+    setUploadError(null);
+    try {
+      const response = await fetch(
+        `/api/admin/upload?filename=${encodeURIComponent(file.name)}`,
+        { method: "POST", body: file },
+      );
+      const data = (await response.json()) as PutBlobResult | { error: string };
+      if (!response.ok || "error" in data) {
+        throw new Error("error" in data ? data.error : "Upload failed");
+      }
+      setUrls((prev) => [...prev.filter((url) => url.trim() !== ""), data.url]);
+    } catch (error) {
+      setUploadError(error instanceof Error ? error.message : "Upload failed");
+    } finally {
+      setIsUploading(false);
+    }
   }
 
   const serialized = urls
@@ -72,14 +100,34 @@ export function ProductImagesField({
         )}
       </div>
 
-      <button
-        type="button"
-        onClick={addRow}
-        className="flex w-fit items-center gap-1.5 rounded-full border border-border-subtle px-3 py-1.5 text-sm hover:bg-surface"
-      >
-        <Plus size={14} />
-        Add image
-      </button>
+      {uploadError && <p className="text-xs text-danger">{uploadError}</p>}
+
+      <div className="flex items-center gap-2">
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          className="hidden"
+        />
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={isUploading}
+          className="flex w-fit items-center gap-1.5 rounded-full bg-foreground px-3 py-1.5 text-sm text-background hover:opacity-90 disabled:opacity-50"
+        >
+          <Upload size={14} />
+          {isUploading ? "Uploading..." : "Upload photo"}
+        </button>
+        <button
+          type="button"
+          onClick={addRow}
+          className="flex w-fit items-center gap-1.5 rounded-full border border-border-subtle px-3 py-1.5 text-sm hover:bg-surface"
+        >
+          <Plus size={14} />
+          Add image URL
+        </button>
+      </div>
     </div>
   );
 }
