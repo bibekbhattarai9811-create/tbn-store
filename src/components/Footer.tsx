@@ -56,7 +56,9 @@ export async function Footer() {
         <div className="flex flex-col gap-2">
           <span className="text-sm font-medium">Company</span>
           <span className="text-sm text-foreground/60">About</span>
-          <span className="text-sm text-foreground/60">Contact</span>
+          <Link href="/contact" className="text-sm text-foreground/60 hover:text-foreground">
+            Contact
+          </Link>
           <span className="text-sm text-foreground/60">Shipping & Returns</span>
           <Link href="/privacy" className="text-sm text-foreground/60 hover:text-foreground">
             Privacy Policy

@@ -97,7 +97,17 @@ export default function PrivacyPage() {
         <h2 className={headingClasses}>Contact us</h2>
         <p className={bodyClasses}>
           Questions about your data, or want it removed? Contact us at{" "}
-          <span className="font-medium text-foreground">[add your business email or phone]</span>.
+          <a
+            href="mailto:NeupanetejParsad59@gmail.com"
+            className="font-medium text-foreground hover:underline"
+          >
+            NeupanetejParsad59@gmail.com
+          </a>{" "}
+          or{" "}
+          <a href="tel:+9779849430041" className="font-medium text-foreground hover:underline">
+            +977 984-9430041
+          </a>
+          .
         </p>
       </div>
     </div>
