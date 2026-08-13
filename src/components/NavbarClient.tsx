@@ -32,9 +32,9 @@ export function NavbarClient({
               alt="TBN Store"
               width={1254}
               height={1254}
-              sizes="48px"
+              sizes="56px"
               priority
-              className="h-12 w-12 object-contain"
+              className="h-14 w-14 object-contain"
             />
           </Link>
           <nav className="hidden items-center gap-6 text-sm md:flex">

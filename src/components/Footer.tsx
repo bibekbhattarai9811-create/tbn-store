@@ -14,8 +14,8 @@ export async function Footer() {
             alt="TBN Store"
             width={1254}
             height={1254}
-            sizes="80px"
-            className="h-20 w-20 object-contain"
+            sizes="96px"
+            className="h-24 w-24 object-contain"
           />
           <p className="text-sm text-foreground/60">
             Cute, comfortable clothing for every little adventure.
