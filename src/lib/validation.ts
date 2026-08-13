@@ -37,6 +37,7 @@ export const categorySchema = z.object({
     .min(1, "Slug is required")
     .max(100)
     .regex(slugPattern, "Use lowercase letters, numbers, and hyphens only"),
+  position: z.coerce.number().int().default(0),
 });
 
 export const bookingSchema = z.object({

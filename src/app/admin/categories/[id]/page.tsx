@@ -32,7 +32,7 @@ export default async function EditCategoryPage(
       </div>
       <CategoryForm
         action={updateCategoryAction.bind(null, category.id)}
-        defaultValues={{ name: category.name, slug: category.slug }}
+        defaultValues={{ name: category.name, slug: category.slug, position: category.position }}
         submitLabel="Save changes"
       />
     </div>

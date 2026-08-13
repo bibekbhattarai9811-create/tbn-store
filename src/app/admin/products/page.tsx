@@ -26,7 +26,7 @@ export default async function AdminProductsPage(props: PageProps<"/admin/product
     : undefined;
 
   const categories = await prisma.category.findMany({
-    orderBy: { name: "asc" },
+    orderBy: [{ position: "asc" }, { name: "asc" }],
     include: {
       products: {
         where: productWhere,

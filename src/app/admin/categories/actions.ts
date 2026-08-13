@@ -14,6 +14,7 @@ function parseCategoryForm(formData: FormData) {
   return categorySchema.safeParse({
     name: formData.get("name"),
     slug: formData.get("slug"),
+    position: formData.get("position"),
   });
 }
 

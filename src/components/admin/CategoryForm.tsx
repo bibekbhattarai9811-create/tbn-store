@@ -24,7 +24,7 @@ export function CategoryForm({
     prevState: CategoryActionState,
     formData: FormData
   ) => Promise<CategoryActionState>;
-  defaultValues?: { name: string; slug: string };
+  defaultValues?: { name: string; slug: string; position?: number };
   submitLabel: string;
 }) {
   const [state, formAction, isPending] = useActionState(action, undefined);
@@ -72,6 +72,22 @@ export function CategoryForm({
           }}
           className={inputClasses}
         />
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="position" className="text-sm font-medium">
+          Order
+        </label>
+        <input
+          id="position"
+          name="position"
+          type="number"
+          defaultValue={defaultValues?.position ?? 0}
+          className={inputClasses}
+        />
+        <p className="text-xs text-foreground/50">
+          Lower numbers show first in the shop navigation.
+        </p>
       </div>
 
       <Button type="submit" size="lg" className="self-start" disabled={isPending}>

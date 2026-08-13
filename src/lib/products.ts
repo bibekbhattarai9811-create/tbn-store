@@ -44,7 +44,7 @@ function toProduct(record: ProductWithRelations): Product {
 }
 
 export async function getCategories() {
-  return prisma.category.findMany({ orderBy: { name: "asc" } });
+  return prisma.category.findMany({ orderBy: [{ position: "asc" }, { name: "asc" }] });
 }
 
 export async function getCategoryBySlug(slug: string) {
