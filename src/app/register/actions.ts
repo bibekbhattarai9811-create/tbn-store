@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { signIn } from "@/auth";
 import { registerSchema } from "@/lib/validation";
 import { getSafeCallbackUrl } from "@/lib/safe-redirect";
+import { domainCanReceiveEmail } from "@/lib/email-verify";
 
 export type RegisterActionState = { error?: string } | undefined;
 
@@ -28,6 +29,11 @@ export async function registerAction(
   });
   if (existing) {
     return { error: "An account with this email already exists" };
+  }
+
+  const emailDomainValid = await domainCanReceiveEmail(parsed.data.email);
+  if (!emailDomainValid) {
+    return { error: "We couldn't verify that email address. Please check for typos." };
   }
 
   const passwordHash = await bcrypt.hash(parsed.data.password, 10);

@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { bookingSchema } from "@/lib/validation";
+import { domainCanReceiveEmail } from "@/lib/email-verify";
 
 export type BookingActionState = { error?: string } | undefined;
 
@@ -28,6 +29,13 @@ export async function createBookingAction(
 
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Invalid input" };
+  }
+
+  if (parsed.data.email) {
+    const emailDomainValid = await domainCanReceiveEmail(parsed.data.email);
+    if (!emailDomainValid) {
+      return { error: "We couldn't verify that email address. Please check for typos." };
+    }
   }
 
   const product = await prisma.product.findUnique({
