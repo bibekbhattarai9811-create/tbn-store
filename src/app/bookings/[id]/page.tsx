@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { buttonClasses } from "@/components/Button";
 
@@ -15,6 +16,11 @@ export default async function BookingConfirmationPage(
 ) {
   const { id } = await props.params;
 
+  const session = await auth();
+  if (!session?.user) {
+    redirect(`/login?callbackUrl=/bookings/${id}`);
+  }
+
   const booking = await prisma.booking.findUnique({
     where: { id },
     include: {
@@ -25,6 +31,10 @@ export default async function BookingConfirmationPage(
   });
 
   if (!booking) {
+    notFound();
+  }
+
+  if (booking.userId !== session.user.id && session.user.role !== "ADMIN") {
     notFound();
   }
 

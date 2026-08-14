@@ -8,7 +8,8 @@ export default auth((req) => {
   const requiresAuth =
     pathname.startsWith("/account") ||
     pathname.startsWith("/admin") ||
-    pathname.startsWith("/wishlist");
+    pathname.startsWith("/wishlist") ||
+    pathname.startsWith("/bookings");
 
   if (!isLoggedIn && requiresAuth) {
     const loginUrl = new URL("/login", origin);
@@ -22,5 +23,5 @@ export default auth((req) => {
 });
 
 export const config = {
-  matcher: ["/account/:path*", "/admin/:path*", "/wishlist/:path*"],
+  matcher: ["/account/:path*", "/admin/:path*", "/wishlist/:path*", "/bookings/:path*"],
 };
