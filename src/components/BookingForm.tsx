@@ -5,20 +5,42 @@ import { useActionState, useState } from "react";
 import { createBookingAction } from "@/app/bookings/actions";
 import { Button } from "@/components/Button";
 import { QuantitySelector } from "@/components/QuantitySelector";
+import type { Dictionary } from "@/i18n/dictionaries";
 
 const inputClasses =
   "h-11 rounded-lg border border-border-subtle bg-surface px-3 text-sm outline-none focus:border-foreground";
+
+type BookingDict = {
+  bookThisProduct: string;
+  size: string;
+  selectSize: string;
+  fullName: string;
+  contactNumber: string;
+  email: string;
+  address: string;
+  shopName: string;
+  submit: string;
+  submitting: string;
+  privacyPrefix: string;
+  privacyLinkLabel: string;
+};
 
 export function BookingForm({
   productId,
   sizes,
   defaultName,
   defaultEmail,
+  dict,
+  productDict,
+  optionalLabel,
 }: {
   productId: string;
   sizes: string[];
   defaultName?: string;
   defaultEmail?: string;
+  dict: BookingDict;
+  productDict: Dictionary["product"];
+  optionalLabel: string;
 }) {
   const [state, formAction, isPending] = useActionState(createBookingAction, undefined);
   const [showForm, setShowForm] = useState(false);
@@ -27,10 +49,10 @@ export function BookingForm({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-4">
-        <QuantitySelector max={99} onChange={setQuantity} />
+        <QuantitySelector max={99} onChange={setQuantity} dict={productDict} />
         {!showForm && (
           <Button size="lg" className="flex-1" onClick={() => setShowForm(true)}>
-            Book this product
+            {dict.bookThisProduct}
           </Button>
         )}
       </div>
@@ -52,7 +74,7 @@ export function BookingForm({
           {sizes.length > 0 && (
             <div className="flex flex-col gap-1.5">
               <label htmlFor="size" className="text-sm font-medium">
-                Size
+                {dict.size}
               </label>
               <select
                 id="size"
@@ -62,7 +84,7 @@ export function BookingForm({
                 className={inputClasses}
               >
                 <option value="" disabled>
-                  Select a size
+                  {dict.selectSize}
                 </option>
                 {sizes.map((size) => (
                   <option key={size} value={size}>
@@ -75,7 +97,7 @@ export function BookingForm({
 
           <div className="flex flex-col gap-1.5">
             <label htmlFor="fullName" className="text-sm font-medium">
-              Full name
+              {dict.fullName}
             </label>
             <input
               id="fullName"
@@ -88,7 +110,7 @@ export function BookingForm({
 
           <div className="flex flex-col gap-1.5">
             <label htmlFor="phone" className="text-sm font-medium">
-              Contact number
+              {dict.contactNumber}
             </label>
             <input
               id="phone"
@@ -102,7 +124,7 @@ export function BookingForm({
 
           <div className="flex flex-col gap-1.5">
             <label htmlFor="email" className="text-sm font-medium">
-              Email <span className="text-foreground/50">(optional)</span>
+              {dict.email} <span className="text-foreground/50">{optionalLabel}</span>
             </label>
             <input
               id="email"
@@ -116,7 +138,7 @@ export function BookingForm({
 
           <div className="flex flex-col gap-1.5">
             <label htmlFor="address" className="text-sm font-medium">
-              Address
+              {dict.address}
             </label>
             <textarea
               id="address"
@@ -129,19 +151,19 @@ export function BookingForm({
 
           <div className="flex flex-col gap-1.5">
             <label htmlFor="shopName" className="text-sm font-medium">
-              Shop name <span className="text-foreground/50">(optional)</span>
+              {dict.shopName} <span className="text-foreground/50">{optionalLabel}</span>
             </label>
             <input id="shopName" name="shopName" className={inputClasses} />
           </div>
 
           <Button type="submit" size="lg" disabled={isPending}>
-            {isPending ? "Submitting..." : "Submit booking request"}
+            {isPending ? dict.submitting : dict.submit}
           </Button>
 
           <p className="text-xs text-foreground/50">
-            We&apos;ll use these details to contact you about this booking. See our{" "}
+            {dict.privacyPrefix}{" "}
             <Link href="/privacy" className="underline hover:text-foreground">
-              Privacy Policy
+              {dict.privacyLinkLabel}
             </Link>
             .
           </p>

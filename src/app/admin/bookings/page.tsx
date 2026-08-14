@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-
-export const metadata: Metadata = {
-  title: "Bookings",
-};
+import { getLocale } from "@/i18n/locale";
+import { getDictionary } from "@/i18n/dictionaries";
 
 const statuses = ["PENDING", "CONTACTED", "CONFIRMED", "CANCELLED"] as const;
 
@@ -16,10 +14,18 @@ function statusHref(status: string, q: string) {
   return query ? `/admin/bookings?${query}` : "/admin/bookings";
 }
 
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  return { title: getDictionary(locale).admin.bookings.title };
+}
+
 export default async function AdminBookingsPage(props: PageProps<"/admin/bookings">) {
   const searchParams = await props.searchParams;
   const status = typeof searchParams.status === "string" ? searchParams.status : "";
   const q = typeof searchParams.q === "string" ? searchParams.q.trim() : "";
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
+  const b = dict.admin.bookings;
 
   const bookings = await prisma.booking.findMany({
     where: {
@@ -42,7 +48,7 @@ export default async function AdminBookingsPage(props: PageProps<"/admin/booking
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Bookings</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">{b.title}</h1>
 
       <form className="max-w-sm">
         {status && <input type="hidden" name="status" value={status} />}
@@ -50,7 +56,7 @@ export default async function AdminBookingsPage(props: PageProps<"/admin/booking
           type="search"
           name="q"
           defaultValue={q}
-          placeholder="Search by name, phone, or email"
+          placeholder={b.searchPlaceholder}
           className="h-11 w-full rounded-full border border-border-subtle bg-surface px-4 text-sm outline-none focus:border-foreground"
         />
       </form>
@@ -62,7 +68,7 @@ export default async function AdminBookingsPage(props: PageProps<"/admin/booking
             !status ? "bg-foreground text-background" : "bg-surface"
           }`}
         >
-          All
+          {b.all}
         </Link>
         {statuses.map((s) => (
           <Link
@@ -72,7 +78,7 @@ export default async function AdminBookingsPage(props: PageProps<"/admin/booking
               status === s ? "bg-foreground text-background" : "bg-surface"
             }`}
           >
-            {s}
+            {dict.bookingStatus[s]}
           </Link>
         ))}
       </div>
@@ -81,13 +87,13 @@ export default async function AdminBookingsPage(props: PageProps<"/admin/booking
         <table className="w-full text-left text-sm">
           <thead className="border-b border-border-subtle bg-surface text-xs uppercase text-foreground/50">
             <tr>
-              <th className="px-4 py-3">#</th>
-              <th className="px-4 py-3">Customer</th>
-              <th className="px-4 py-3">Product</th>
-              <th className="px-4 py-3">Size</th>
-              <th className="px-4 py-3">Qty</th>
-              <th className="px-4 py-3">Date</th>
-              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3">{b.colNumber}</th>
+              <th className="px-4 py-3">{b.colCustomer}</th>
+              <th className="px-4 py-3">{b.colProduct}</th>
+              <th className="px-4 py-3">{b.colSize}</th>
+              <th className="px-4 py-3">{b.colQty}</th>
+              <th className="px-4 py-3">{b.colDate}</th>
+              <th className="px-4 py-3">{b.colStatus}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border-subtle">
@@ -109,13 +115,13 @@ export default async function AdminBookingsPage(props: PageProps<"/admin/booking
                 <td className="px-4 py-3 text-foreground/60">
                   {booking.createdAt.toLocaleDateString()}
                 </td>
-                <td className="px-4 py-3">{booking.status}</td>
+                <td className="px-4 py-3">{dict.bookingStatus[booking.status]}</td>
               </tr>
             ))}
             {bookings.length === 0 && (
               <tr>
                 <td colSpan={7} className="px-4 py-8 text-center text-foreground/60">
-                  No bookings found.
+                  {b.noBookingsFound}
                 </td>
               </tr>
             )}

@@ -4,13 +4,18 @@ import { buttonClasses } from "@/components/Button";
 import { ProductGrid } from "@/components/ProductGrid";
 import { getCategories, getFeaturedProducts } from "@/lib/products";
 import { getSiteSettings } from "@/lib/settings";
+import { getLocale } from "@/i18n/locale";
+import { getDictionary } from "@/i18n/dictionaries";
 
 export default async function Home() {
-  const [categories, featuredProducts, settings] = await Promise.all([
+  const [categories, featuredProducts, settings, locale] = await Promise.all([
     getCategories(),
     getFeaturedProducts(8),
     getSiteSettings(),
+    getLocale(),
   ]);
+  const fullDict = getDictionary(locale);
+  const dict = fullDict.home;
   const heroImageUrl =
     settings?.heroImageUrl || "https://picsum.photos/seed/tbn-store-hero/1600/900";
 
@@ -26,16 +31,12 @@ export default async function Home() {
         />
         <div className="relative mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 sm:px-6 lg:px-8">
           <h1 className="max-w-lg text-4xl font-semibold tracking-tight sm:text-5xl">
-            Cosy knitwear and everyday outfits for kids on the move
+            {dict.heroTitle}
           </h1>
-          <p className="max-w-md text-lg text-foreground/70">
-            Sweaters, tracksuits, and matching sets for cooler days. Find
-            something you like, book it, and we&apos;ll call to confirm
-            sizing and delivery.
-          </p>
+          <p className="max-w-md text-lg text-foreground/70">{dict.heroSubtitle}</p>
           <div>
             <Link href="/products" className={buttonClasses("primary", "lg")}>
-              Shop now
+              {dict.shopNow}
             </Link>
           </div>
         </div>
@@ -70,13 +71,13 @@ export default async function Home() {
       <section className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-6 flex items-end justify-between">
           <h2 className="text-2xl font-semibold tracking-tight">
-            Featured products
+            {dict.featuredProducts}
           </h2>
           <Link href="/products" className="text-sm font-medium hover:underline">
-            View all
+            {fullDict.common.viewAll}
           </Link>
         </div>
-        <ProductGrid products={featuredProducts} />
+        <ProductGrid products={featuredProducts} dict={fullDict} />
       </section>
     </div>
   );

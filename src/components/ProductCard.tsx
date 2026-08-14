@@ -4,15 +4,24 @@ import type { Product } from "@/types/product";
 import { getStockState } from "@/types/product";
 import { PriceDisplay } from "@/components/PriceDisplay";
 import { Rating } from "@/components/Rating";
+import type { Dictionary } from "@/i18n/dictionaries";
 
-const stockBadge = {
-  "in-stock": null,
-  "low-stock": { label: "Low stock", className: "bg-amber-100 text-amber-800" },
-  "out-of-stock": { label: "Out of stock", className: "bg-foreground/10 text-foreground/60" },
-};
-
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({
+  product,
+  dict,
+}: {
+  product: Product;
+  dict: Dictionary["product"];
+}) {
   const stockState = getStockState(product.stock);
+  const stockBadge = {
+    "in-stock": null,
+    "low-stock": { label: dict.lowStock, className: "bg-amber-100 text-amber-800" },
+    "out-of-stock": {
+      label: dict.outOfStock,
+      className: "bg-foreground/10 text-foreground/60",
+    },
+  };
   const badge = stockBadge[stockState];
   const image = product.images[0];
 
@@ -33,7 +42,7 @@ export function ProductCard({ product }: { product: Product }) {
         )}
         {product.salePrice != null && stockState !== "out-of-stock" && (
           <span className="absolute left-3 top-3 rounded-full bg-accent px-2.5 py-1 text-xs font-medium text-accent-foreground">
-            Sale
+            {dict.sale}
           </span>
         )}
         {badge && (

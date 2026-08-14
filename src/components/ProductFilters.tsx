@@ -3,17 +3,30 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
 
-const sortOptions = [
-  { value: "featured", label: "Featured" },
-  { value: "price-asc", label: "Price: low to high" },
-  { value: "price-desc", label: "Price: high to low" },
-  { value: "rating", label: "Top rated" },
-  { value: "newest", label: "Newest" },
-];
-
-export function ProductFilters({ resultCount }: { resultCount: number }) {
+export function ProductFilters({
+  resultLabel,
+  dict,
+}: {
+  resultLabel: string;
+  dict: {
+    searchPlaceholder: string;
+    sortFeatured: string;
+    sortPriceAsc: string;
+    sortPriceDesc: string;
+    sortRating: string;
+    sortNewest: string;
+  };
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  const sortOptions = [
+    { value: "featured", label: dict.sortFeatured },
+    { value: "price-asc", label: dict.sortPriceAsc },
+    { value: "price-desc", label: dict.sortPriceDesc },
+    { value: "rating", label: dict.sortRating },
+    { value: "newest", label: dict.sortNewest },
+  ];
 
   function updateParam(key: string, value: string) {
     const params = new URLSearchParams(searchParams.toString());
@@ -31,7 +44,7 @@ export function ProductFilters({ resultCount }: { resultCount: number }) {
         <Search size={16} className="text-foreground/50" />
         <input
           type="search"
-          placeholder="Search products"
+          placeholder={dict.searchPlaceholder}
           defaultValue={searchParams.get("q") ?? ""}
           onChange={(event) => updateParam("q", event.target.value)}
           className="w-full bg-transparent text-sm outline-none placeholder:text-foreground/40"
@@ -39,9 +52,7 @@ export function ProductFilters({ resultCount }: { resultCount: number }) {
       </div>
 
       <div className="flex items-center gap-3">
-        <span className="text-sm text-foreground/60">
-          {resultCount} {resultCount === 1 ? "product" : "products"}
-        </span>
+        <span className="text-sm text-foreground/60">{resultLabel}</span>
         <select
           value={searchParams.get("sort") ?? "featured"}
           onChange={(event) => updateParam("sort", event.target.value)}

@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import { Button } from "@/components/Button";
 import { SingleImageField } from "@/components/admin/SingleImageField";
 import type { CategoryActionState } from "@/app/admin/categories/actions";
+import type { Dictionary } from "@/i18n/dictionaries";
 
 function slugify(value: string) {
   return value
@@ -20,6 +21,7 @@ export function CategoryForm({
   action,
   defaultValues,
   submitLabel,
+  dict,
 }: {
   action: (
     prevState: CategoryActionState,
@@ -32,7 +34,9 @@ export function CategoryForm({
     imageUrl?: string | null;
   };
   submitLabel: string;
+  dict: { form: Dictionary["admin"]["categories"]["form"]; common: Dictionary["common"] };
 }) {
+  const { form, common } = dict;
   const [state, formAction, isPending] = useActionState(action, undefined);
   const [name, setName] = useState(defaultValues?.name ?? "");
   const [slug, setSlug] = useState(defaultValues?.slug ?? "");
@@ -48,7 +52,7 @@ export function CategoryForm({
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="name" className="text-sm font-medium">
-          Name
+          {form.name}
         </label>
         <input
           id="name"
@@ -65,7 +69,7 @@ export function CategoryForm({
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="slug" className="text-sm font-medium">
-          Slug
+          {form.slug}
         </label>
         <input
           id="slug"
@@ -82,13 +86,14 @@ export function CategoryForm({
 
       <SingleImageField
         name="imageUrl"
-        label="Category image"
+        label={form.categoryImage}
         defaultUrl={defaultValues?.imageUrl ?? ""}
+        dict={common}
       />
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="position" className="text-sm font-medium">
-          Order
+          {form.order}
         </label>
         <input
           id="position"
@@ -97,13 +102,11 @@ export function CategoryForm({
           defaultValue={defaultValues?.position ?? 0}
           className={inputClasses}
         />
-        <p className="text-xs text-foreground/50">
-          Lower numbers show first in the shop navigation.
-        </p>
+        <p className="text-xs text-foreground/50">{form.orderHint}</p>
       </div>
 
       <Button type="submit" size="lg" className="self-start" disabled={isPending}>
-        {isPending ? "Saving..." : submitLabel}
+        {isPending ? common.saving : submitLabel}
       </Button>
     </form>
   );

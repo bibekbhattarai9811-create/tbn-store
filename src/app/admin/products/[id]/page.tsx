@@ -4,10 +4,13 @@ import { prisma } from "@/lib/prisma";
 import { ProductForm } from "@/components/admin/ProductForm";
 import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
 import { updateProductAction, deleteProductAction } from "../actions";
+import { getLocale } from "@/i18n/locale";
+import { getDictionary } from "@/i18n/dictionaries";
 
-export const metadata: Metadata = {
-  title: "Edit product",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  return { title: getDictionary(locale).admin.products.editTitle };
+}
 
 export default async function EditProductPage(
   props: PageProps<"/admin/products/[id]">
@@ -26,13 +29,18 @@ export default async function EditProductPage(
     notFound();
   }
 
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
+  const p = dict.admin.products;
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold tracking-tight">Edit product</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">{p.editTitle}</h1>
         <ConfirmDeleteButton
-          label="Delete product"
-          confirmMessage={`Delete "${product.name}"? This can't be undone.`}
+          label={p.deleteProduct}
+          deletingLabel={dict.common.deleting}
+          confirmMessage={p.deleteConfirmEdit(product.name)}
           action={deleteProductAction.bind(null, product.id)}
           redirectTo="/admin/products"
         />
@@ -40,7 +48,8 @@ export default async function EditProductPage(
       <ProductForm
         action={updateProductAction.bind(null, product.id)}
         categories={categories}
-        submitLabel="Save changes"
+        submitLabel={p.saveChanges}
+        dict={{ form: p.form, common: dict.common }}
         defaultValues={{
           name: product.name,
           slug: product.slug,

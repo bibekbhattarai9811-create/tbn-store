@@ -4,17 +4,20 @@ import Link from "next/link";
 import { useState, useTransition } from "react";
 import { Heart } from "lucide-react";
 import { toggleWishlistAction } from "@/app/wishlist/actions";
+import type { Dictionary } from "@/i18n/dictionaries";
 
 export function WishlistButton({
   productId,
   initialSaved,
   isLoggedIn,
   callbackUrl,
+  dict,
 }: {
   productId: string;
   initialSaved: boolean;
   isLoggedIn: boolean;
   callbackUrl: string;
+  dict: Dictionary["product"];
 }) {
   const [saved, setSaved] = useState(initialSaved);
   const [isPending, startTransition] = useTransition();
@@ -23,7 +26,7 @@ export function WishlistButton({
     return (
       <Link
         href={`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`}
-        aria-label="Sign in to save to wishlist"
+        aria-label={dict.signInToWishlist}
         className="flex h-11 w-11 items-center justify-center rounded-full border border-border-subtle hover:bg-surface"
       >
         <Heart size={18} className="text-foreground/60" />
@@ -49,7 +52,7 @@ export function WishlistButton({
       type="button"
       onClick={handleClick}
       disabled={isPending}
-      aria-label={saved ? "Remove from wishlist" : "Save to wishlist"}
+      aria-label={saved ? dict.removeFromWishlist : dict.saveToWishlist}
       aria-pressed={saved}
       className="flex h-11 w-11 items-center justify-center rounded-full border border-border-subtle hover:bg-surface disabled:opacity-50"
     >

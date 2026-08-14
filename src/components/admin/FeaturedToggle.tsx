@@ -7,9 +7,13 @@ import { toggleFeaturedAction } from "@/app/admin/products/actions";
 export function FeaturedToggle({
   productId,
   initialFeatured,
+  markLabel,
+  removeLabel,
 }: {
   productId: string;
   initialFeatured: boolean;
+  markLabel: string;
+  removeLabel: string;
 }) {
   const [featured, setFeatured] = useState(initialFeatured);
   const [isPending, startTransition] = useTransition();
@@ -30,7 +34,7 @@ export function FeaturedToggle({
       type="button"
       onClick={handleClick}
       disabled={isPending}
-      aria-label={featured ? "Remove from featured" : "Mark as featured"}
+      aria-label={featured ? removeLabel : markLabel}
       aria-pressed={featured}
       className="rounded-full p-1.5 hover:bg-surface disabled:opacity-50"
     >

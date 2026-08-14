@@ -6,6 +6,9 @@ import { useState } from "react";
 import { Heart, LayoutDashboard, LogOut, Menu, Search, User, X } from "lucide-react";
 import type { Category } from "@/types/product";
 import { signOutAction } from "@/app/actions";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import type { Locale } from "@/i18n/locale";
+import type { Dictionary } from "@/i18n/dictionaries";
 
 type SessionUser = {
   name?: string | null;
@@ -16,9 +19,13 @@ type SessionUser = {
 export function NavbarClient({
   categories,
   user,
+  locale,
+  dict,
 }: {
   categories: Category[];
   user: SessionUser;
+  locale: Locale;
+  dict: Dictionary["nav"];
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -39,7 +46,7 @@ export function NavbarClient({
           </Link>
           <nav className="hidden items-center gap-6 text-sm md:flex">
             <Link href="/products" className="hover:text-foreground/70">
-              Shop
+              {dict.shop}
             </Link>
             {categories.slice(0, 4).map((category) => (
               <Link
@@ -61,10 +68,14 @@ export function NavbarClient({
           <input
             type="search"
             name="q"
-            placeholder="Search products"
+            placeholder={dict.searchPlaceholder}
             className="w-full bg-transparent text-sm outline-none placeholder:text-foreground/40"
           />
         </form>
+
+        <div className="hidden sm:block">
+          <LanguageSwitcher locale={locale} />
+        </div>
 
         <div className="flex items-center gap-1">
           {user ? (
@@ -75,12 +86,12 @@ export function NavbarClient({
                   className="hidden items-center gap-2 rounded-full px-3 py-2 text-sm hover:bg-surface sm:flex"
                 >
                   <LayoutDashboard size={16} />
-                  Admin
+                  {dict.admin}
                 </Link>
               )}
               <Link
                 href="/wishlist"
-                aria-label="Wishlist"
+                aria-label={dict.wishlist}
                 className="rounded-full p-2 hover:bg-surface"
               >
                 <Heart size={20} />
@@ -90,12 +101,12 @@ export function NavbarClient({
                 className="hidden items-center gap-2 rounded-full px-3 py-2 text-sm hover:bg-surface sm:flex"
               >
                 <User size={16} />
-                {user.name?.split(" ")[0] ?? "Account"}
+                {user.name?.split(" ")[0] ?? dict.account}
               </Link>
               <form action={signOutAction}>
                 <button
                   type="submit"
-                  aria-label="Sign out"
+                  aria-label={dict.signOut}
                   className="rounded-full p-2 hover:bg-surface"
                 >
                   <LogOut size={20} />
@@ -105,7 +116,7 @@ export function NavbarClient({
           ) : (
             <Link
               href="/login"
-              aria-label="Account"
+              aria-label={dict.signIn}
               className="rounded-full p-2 hover:bg-surface"
             >
               <User size={20} />
@@ -113,7 +124,7 @@ export function NavbarClient({
           )}
           <button
             type="button"
-            aria-label="Toggle menu"
+            aria-label={dict.toggleMenu}
             onClick={() => setMenuOpen((open) => !open)}
             className="rounded-full p-2 hover:bg-surface md:hidden"
           >
@@ -132,10 +143,14 @@ export function NavbarClient({
             <input
               type="search"
               name="q"
-              placeholder="Search products"
+              placeholder={dict.searchPlaceholder}
               className="w-full bg-transparent text-sm outline-none placeholder:text-foreground/40"
             />
           </form>
+
+          <div className="mb-1 sm:hidden">
+            <LanguageSwitcher locale={locale} />
+          </div>
 
           {user?.role === "ADMIN" && (
             <Link
@@ -144,7 +159,7 @@ export function NavbarClient({
               onClick={() => setMenuOpen(false)}
             >
               <LayoutDashboard size={16} />
-              Admin
+              {dict.admin}
             </Link>
           )}
 
@@ -153,7 +168,7 @@ export function NavbarClient({
             className="rounded-lg px-2 py-2 text-sm hover:bg-surface"
             onClick={() => setMenuOpen(false)}
           >
-            Shop
+            {dict.shop}
           </Link>
           {categories.map((category) => (
             <Link

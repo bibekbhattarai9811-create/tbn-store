@@ -7,14 +7,20 @@ import { Button, buttonClasses } from "@/components/Button";
 import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
 import { FeaturedToggle } from "@/components/admin/FeaturedToggle";
 import { deleteProductAction } from "./actions";
+import { getLocale } from "@/i18n/locale";
+import { getDictionary } from "@/i18n/dictionaries";
 
-export const metadata: Metadata = {
-  title: "Products",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  return { title: getDictionary(locale).admin.products.title };
+}
 
 export default async function AdminProductsPage(props: PageProps<"/admin/products">) {
   const searchParams = await props.searchParams;
   const q = typeof searchParams.q === "string" ? searchParams.q.trim() : "";
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
+  const p = dict.admin.products;
 
   const productWhere = q
     ? {
@@ -43,9 +49,9 @@ export default async function AdminProductsPage(props: PageProps<"/admin/product
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold tracking-tight">Products</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">{p.title}</h1>
         <Link href="/admin/products/new" className={buttonClasses("primary", "md")}>
-          Add product
+          {p.addProduct}
         </Link>
       </div>
 
@@ -54,7 +60,7 @@ export default async function AdminProductsPage(props: PageProps<"/admin/product
           type="search"
           name="q"
           defaultValue={q}
-          placeholder="Search by name or SKU"
+          placeholder={p.searchPlaceholder}
           className="h-11 w-full rounded-full border border-border-subtle bg-surface px-4 text-sm outline-none focus:border-foreground"
         />
       </form>
@@ -74,9 +80,9 @@ export default async function AdminProductsPage(props: PageProps<"/admin/product
                 <thead className="border-b border-border-subtle bg-surface text-xs uppercase text-foreground/50">
                   <tr>
                     <th className="px-4 py-3" />
-                    <th className="px-4 py-3">Product</th>
-                    <th className="px-4 py-3">Price</th>
-                    <th className="px-4 py-3">Stock</th>
+                    <th className="px-4 py-3">{p.colProduct}</th>
+                    <th className="px-4 py-3">{p.colPrice}</th>
+                    <th className="px-4 py-3">{p.colStock}</th>
                     <th className="px-4 py-3" />
                   </tr>
                 </thead>
@@ -87,6 +93,8 @@ export default async function AdminProductsPage(props: PageProps<"/admin/product
                         <FeaturedToggle
                           productId={product.id}
                           initialFeatured={product.featured}
+                          markLabel={p.markFeatured}
+                          removeLabel={p.removeFeatured}
                         />
                       </td>
                       <td className="flex items-center gap-3 px-4 py-3">
@@ -114,12 +122,14 @@ export default async function AdminProductsPage(props: PageProps<"/admin/product
                         <div className="flex items-center justify-end gap-2">
                           <Link href={`/admin/products/${product.id}`}>
                             <Button variant="secondary" size="sm">
-                              Edit
+                              {dict.common.edit}
                             </Button>
                           </Link>
                           <ConfirmDeleteButton
-                            confirmMessage={`Delete "${product.name}"? This can't be undone.`}
+                            confirmMessage={p.deleteConfirm(product.name)}
                             action={deleteProductAction.bind(null, product.id)}
+                            label={dict.common.delete}
+                            deletingLabel={dict.common.deleting}
                           />
                         </div>
                       </td>
@@ -128,7 +138,7 @@ export default async function AdminProductsPage(props: PageProps<"/admin/product
                   {category.products.length === 0 && (
                     <tr>
                       <td colSpan={5} className="px-4 py-8 text-center text-foreground/60">
-                        No products in this category yet.
+                        {p.noProductsInCategory}
                       </td>
                     </tr>
                   )}
@@ -140,7 +150,7 @@ export default async function AdminProductsPage(props: PageProps<"/admin/product
 
         {visibleCategories.length === 0 && (
           <p className="rounded-2xl border border-border-subtle px-4 py-8 text-center text-sm text-foreground/60">
-            No products found.
+            {p.noProductsFound}
           </p>
         )}
       </div>

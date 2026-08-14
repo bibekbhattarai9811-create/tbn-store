@@ -18,6 +18,8 @@ import { getStockState } from "@/types/product";
 import { getReviewsForProduct, getUserReviewForProduct } from "@/lib/reviews";
 import { isProductWishlisted } from "@/lib/wishlist";
 import { auth } from "@/auth";
+import { getLocale } from "@/i18n/locale";
+import { getDictionary } from "@/i18n/dictionaries";
 
 export async function generateMetadata(
   props: PageProps<"/products/[slug]">
@@ -59,16 +61,12 @@ export async function generateMetadata(
   return {};
 }
 
-const stockLabel = {
-  "in-stock": { text: "In stock", className: "text-emerald-700" },
-  "low-stock": { text: "Low stock", className: "text-amber-700" },
-  "out-of-stock": { text: "Out of stock", className: "text-foreground/50" },
-};
-
 export default async function ProductOrCategoryPage(
   props: PageProps<"/products/[slug]">
 ) {
   const { slug } = await props.params;
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
 
   const category = await getCategoryBySlug(slug);
   if (category) {
@@ -77,11 +75,9 @@ export default async function ProductOrCategoryPage(
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-10 sm:px-6 lg:px-8">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">{category.name}</h1>
-          <p className="text-sm text-foreground/60">
-            {products.length} {products.length === 1 ? "product" : "products"}
-          </p>
+          <p className="text-sm text-foreground/60">{dict.products.resultCount(products.length)}</p>
         </div>
-        <ProductGrid products={products} />
+        <ProductGrid products={products} dict={dict} />
       </div>
     );
   }
@@ -92,6 +88,11 @@ export default async function ProductOrCategoryPage(
   }
 
   const stockState = getStockState(product.stock);
+  const stockLabel = {
+    "in-stock": { text: dict.product.inStock, className: "text-emerald-700" },
+    "low-stock": { text: dict.product.lowStock, className: "text-amber-700" },
+    "out-of-stock": { text: dict.product.outOfStock, className: "text-foreground/50" },
+  };
   const stock = stockLabel[stockState];
   const session = await auth();
 
@@ -121,6 +122,7 @@ export default async function ProductOrCategoryPage(
             initialSaved={wishlisted}
             isLoggedIn={!!session?.user}
             callbackUrl={`/products/${product.slug}`}
+            dict={dict.product}
           />
         </div>
 
@@ -134,7 +136,7 @@ export default async function ProductOrCategoryPage(
 
         {product.sizes.length > 0 && (
           <div className="flex flex-wrap items-center gap-2 text-sm">
-            <span className="text-foreground/50">Available sizes:</span>
+            <span className="text-foreground/50">{dict.product.availableSizes}</span>
             {product.sizes.map((size) => (
               <span
                 key={size}
@@ -152,61 +154,85 @@ export default async function ProductOrCategoryPage(
             sizes={product.sizes}
             defaultName={session.user.name ?? undefined}
             defaultEmail={session.user.email ?? undefined}
+            dict={{
+              bookThisProduct: dict.booking.bookThisProduct,
+              size: dict.booking.size,
+              selectSize: dict.booking.selectSize,
+              fullName: dict.booking.fullName,
+              contactNumber: dict.booking.contactNumber,
+              email: dict.booking.email,
+              address: dict.booking.address,
+              shopName: dict.booking.shopName,
+              submit: dict.booking.submit,
+              submitting: dict.booking.submitting,
+              privacyPrefix: dict.booking.privacyPrefix,
+              privacyLinkLabel: dict.booking.privacyLinkLabel,
+            }}
+            productDict={dict.product}
+            optionalLabel={dict.common.optional}
           />
         ) : (
           <div className="flex flex-col gap-2 rounded-2xl border border-border-subtle p-4">
-            <p className="text-sm text-foreground/70">
-              Sign in to book this product. We&apos;ll contact you to confirm
-              details.
-            </p>
+            <p className="text-sm text-foreground/70">{dict.booking.signInPrompt}</p>
             <Link
               href={`/login?callbackUrl=/products/${product.slug}`}
               className={buttonClasses("primary", "lg")}
             >
-              Sign in to book
+              {dict.booking.signInCta}
             </Link>
           </div>
         )}
 
         <dl className="grid grid-cols-2 gap-3 border-t border-border-subtle pt-5 text-sm">
           <div>
-            <dt className="text-foreground/50">SKU</dt>
+            <dt className="text-foreground/50">{dict.product.sku}</dt>
             <dd>{product.sku}</dd>
           </div>
           <div>
-            <dt className="text-foreground/50">Category</dt>
+            <dt className="text-foreground/50">{dict.product.category}</dt>
             <dd>{product.category.name}</dd>
           </div>
         </dl>
       </div>
 
       <div className="col-span-full flex flex-col gap-6 border-t border-border-subtle pt-8">
-        <h2 className="text-xl font-semibold tracking-tight">Reviews</h2>
+        <h2 className="text-xl font-semibold tracking-tight">{dict.reviews.heading}</h2>
 
         {session?.user ? (
           <ReviewForm
             productId={product.id}
             defaultRating={userReview?.rating}
             defaultComment={userReview?.comment}
+            rateLabels={[
+              dict.reviews.rateStars(1),
+              dict.reviews.rateStars(2),
+              dict.reviews.rateStars(3),
+              dict.reviews.rateStars(4),
+              dict.reviews.rateStars(5),
+            ]}
+            dict={{
+              yourRating: dict.reviews.yourRating,
+              rateThis: dict.reviews.rateThis,
+              comment: dict.reviews.comment,
+              submit: dict.reviews.submit,
+              update: dict.reviews.update,
+              saving: dict.reviews.saving,
+            }}
           />
         ) : (
           <div className="flex flex-col gap-2 rounded-2xl border border-border-subtle p-4">
-            <p className="text-sm text-foreground/70">
-              Sign in to write a review.
-            </p>
+            <p className="text-sm text-foreground/70">{dict.reviews.signInPrompt}</p>
             <Link
               href={`/login?callbackUrl=/products/${product.slug}`}
               className={buttonClasses("secondary", "md")}
             >
-              Sign in to review
+              {dict.reviews.signInCta}
             </Link>
           </div>
         )}
 
         {reviews.length === 0 ? (
-          <p className="text-sm text-foreground/60">
-            No reviews yet. Be the first to share your thoughts.
-          </p>
+          <p className="text-sm text-foreground/60">{dict.reviews.noReviewsYet}</p>
         ) : (
           <ul className="flex flex-col divide-y divide-border-subtle">
             {reviews.map((review) => (

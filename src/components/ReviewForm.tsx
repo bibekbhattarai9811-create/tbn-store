@@ -9,10 +9,21 @@ export function ReviewForm({
   productId,
   defaultRating,
   defaultComment,
+  rateLabels,
+  dict,
 }: {
   productId: string;
   defaultRating?: number;
   defaultComment?: string | null;
+  rateLabels: [string, string, string, string, string];
+  dict: {
+    yourRating: string;
+    rateThis: string;
+    comment: string;
+    submit: string;
+    update: string;
+    saving: string;
+  };
 }) {
   const [state, formAction, isPending] = useActionState(upsertReviewAction, undefined);
   const [rating, setRating] = useState(defaultRating ?? 0);
@@ -34,14 +45,14 @@ export function ReviewForm({
 
       <div className="flex flex-col gap-1.5">
         <span className="text-sm font-medium">
-          {defaultRating ? "Your rating" : "Rate this product"}
+          {defaultRating ? dict.yourRating : dict.rateThis}
         </span>
         <div className="flex items-center gap-1">
           {[1, 2, 3, 4, 5].map((value) => (
             <button
               key={value}
               type="button"
-              aria-label={`Rate ${value} star${value > 1 ? "s" : ""}`}
+              aria-label={rateLabels[value - 1]}
               onClick={() => setRating(value)}
               onMouseEnter={() => setHoverRating(value)}
               onMouseLeave={() => setHoverRating(0)}
@@ -61,7 +72,7 @@ export function ReviewForm({
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="comment" className="text-sm font-medium">
-          Comment <span className="text-foreground/50">(optional)</span>
+          {dict.comment}
         </label>
         <textarea
           id="comment"
@@ -78,7 +89,7 @@ export function ReviewForm({
         className="self-start"
         disabled={isPending || rating === 0}
       >
-        {isPending ? "Saving..." : defaultRating ? "Update review" : "Submit review"}
+        {isPending ? dict.saving : defaultRating ? dict.update : dict.submit}
       </Button>
     </form>
   );

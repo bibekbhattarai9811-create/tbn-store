@@ -5,10 +5,13 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/Button";
 import { signOutAction } from "@/app/actions";
+import { getLocale } from "@/i18n/locale";
+import { getDictionary } from "@/i18n/dictionaries";
 
-export const metadata: Metadata = {
-  title: "Your account",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  return { title: getDictionary(locale).account.pageTitle };
+}
 
 export default async function AccountPage() {
   const session = await auth();
@@ -17,6 +20,8 @@ export default async function AccountPage() {
   }
 
   const { user } = session;
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
 
   const bookings = await prisma.booking.findMany({
     where: { userId: user.id },
@@ -28,24 +33,22 @@ export default async function AccountPage() {
   return (
     <div className="mx-auto flex w-full max-w-xl flex-1 flex-col gap-8 px-4 py-16 sm:px-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Your account</h1>
-        <p className="text-sm text-foreground/60">
-          Manage your profile details.
-        </p>
+        <h1 className="text-2xl font-semibold tracking-tight">{dict.account.pageTitle}</h1>
+        <p className="text-sm text-foreground/60">{dict.account.subtitle}</p>
       </div>
 
       <dl className="flex flex-col gap-4 rounded-2xl border border-border-subtle p-6">
         <div className="flex justify-between text-sm">
-          <dt className="text-foreground/60">Name</dt>
+          <dt className="text-foreground/60">{dict.account.name}</dt>
           <dd className="font-medium">{user.name}</dd>
         </div>
         <div className="flex justify-between text-sm">
-          <dt className="text-foreground/60">Email</dt>
+          <dt className="text-foreground/60">{dict.account.email}</dt>
           <dd className="font-medium">{user.email}</dd>
         </div>
         <div className="flex justify-between text-sm">
-          <dt className="text-foreground/60">Role</dt>
-          <dd className="font-medium">{user.role}</dd>
+          <dt className="text-foreground/60">{dict.account.role}</dt>
+          <dd className="font-medium">{dict.admin.role[user.role]}</dd>
         </div>
       </dl>
 
@@ -53,15 +56,13 @@ export default async function AccountPage() {
         href="/wishlist"
         className="text-sm font-medium text-foreground hover:underline"
       >
-        View your wishlist →
+        {dict.account.viewWishlist}
       </Link>
 
       <div className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold">Your bookings</h2>
+        <h2 className="text-lg font-semibold">{dict.account.yourBookings}</h2>
         {bookings.length === 0 ? (
-          <p className="text-sm text-foreground/60">
-            You haven&apos;t booked any products yet.
-          </p>
+          <p className="text-sm text-foreground/60">{dict.account.noBookings}</p>
         ) : (
           <ul className="flex flex-col divide-y divide-border-subtle rounded-2xl border border-border-subtle">
             {bookings.map((booking) => (
@@ -78,7 +79,7 @@ export default async function AccountPage() {
                       {booking.createdAt.toLocaleDateString()} · Qty {booking.quantity}
                     </span>
                   </div>
-                  <span className="font-semibold">{booking.status}</span>
+                  <span className="font-semibold">{dict.bookingStatus[booking.status]}</span>
                 </Link>
               </li>
             ))}
@@ -88,7 +89,7 @@ export default async function AccountPage() {
 
       <form action={signOutAction}>
         <Button type="submit" variant="secondary">
-          Sign out
+          {dict.account.signOut}
         </Button>
       </form>
     </div>

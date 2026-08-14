@@ -1,30 +1,36 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { getLocale } from "@/i18n/locale";
+import { getDictionary } from "@/i18n/dictionaries";
 
-export const metadata: Metadata = {
-  title: "Customers",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  return { title: getDictionary(locale).admin.customers.title };
+}
 
 export default async function AdminCustomersPage() {
   const users = await prisma.user.findMany({
     orderBy: { createdAt: "desc" },
     include: { _count: { select: { bookings: true } } },
   });
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
+  const c = dict.admin.customers;
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Customers</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">{c.title}</h1>
 
       <div className="overflow-x-auto rounded-2xl border border-border-subtle">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-border-subtle bg-surface text-xs uppercase text-foreground/50">
             <tr>
-              <th className="px-4 py-3">Name</th>
-              <th className="px-4 py-3">Email</th>
-              <th className="px-4 py-3">Role</th>
-              <th className="px-4 py-3">Bookings</th>
-              <th className="px-4 py-3">Joined</th>
+              <th className="px-4 py-3">{c.colName}</th>
+              <th className="px-4 py-3">{c.colEmail}</th>
+              <th className="px-4 py-3">{c.colRole}</th>
+              <th className="px-4 py-3">{c.colBookings}</th>
+              <th className="px-4 py-3">{c.colJoined}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border-subtle">
@@ -39,7 +45,7 @@ export default async function AdminCustomersPage() {
                   </Link>
                 </td>
                 <td className="px-4 py-3 text-foreground/60">{user.email}</td>
-                <td className="px-4 py-3">{user.role}</td>
+                <td className="px-4 py-3">{dict.admin.role[user.role]}</td>
                 <td className="px-4 py-3">{user._count.bookings}</td>
                 <td className="px-4 py-3 text-foreground/60">
                   {user.createdAt.toLocaleDateString()}

@@ -3,11 +3,14 @@
 import { useRef, useState } from "react";
 import type { PutBlobResult } from "@vercel/blob";
 import { Plus, Upload, X } from "lucide-react";
+import type { Dictionary } from "@/i18n/dictionaries";
 
 export function ProductImagesField({
   defaultImages = [],
+  dict,
 }: {
   defaultImages?: string[];
+  dict: Dictionary["common"];
 }) {
   const [urls, setUrls] = useState<string[]>(
     defaultImages.length ? defaultImages : [""]
@@ -59,7 +62,7 @@ export function ProductImagesField({
 
   return (
     <div className="flex flex-col gap-3">
-      <span className="text-sm font-medium">Images</span>
+      <span className="text-sm font-medium">{dict.images}</span>
       <input type="hidden" name="images" value={serialized} />
 
       <div className="flex flex-col gap-2">
@@ -88,7 +91,7 @@ export function ProductImagesField({
             <button
               type="button"
               onClick={() => removeAt(index)}
-              aria-label="Remove image"
+              aria-label={dict.removeImage}
               className="rounded-full p-2 text-foreground/50 hover:bg-surface hover:text-danger"
             >
               <X size={16} />
@@ -96,7 +99,7 @@ export function ProductImagesField({
           </div>
         ))}
         {urls.length === 0 && (
-          <p className="text-xs text-foreground/50">No images yet.</p>
+          <p className="text-xs text-foreground/50">{dict.noImagesYet}</p>
         )}
       </div>
 
@@ -117,7 +120,7 @@ export function ProductImagesField({
           className="flex w-fit items-center gap-1.5 rounded-full bg-foreground px-3 py-1.5 text-sm text-background hover:opacity-90 disabled:opacity-50"
         >
           <Upload size={14} />
-          {isUploading ? "Uploading..." : "Upload photo"}
+          {isUploading ? dict.uploading : dict.upload}
         </button>
         <button
           type="button"
@@ -125,7 +128,7 @@ export function ProductImagesField({
           className="flex w-fit items-center gap-1.5 rounded-full border border-border-subtle px-3 py-1.5 text-sm hover:bg-surface"
         >
           <Plus size={14} />
-          Add image URL
+          {dict.addImageUrl}
         </button>
       </div>
     </div>

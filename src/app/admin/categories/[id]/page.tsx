@@ -4,10 +4,13 @@ import { prisma } from "@/lib/prisma";
 import { CategoryForm } from "@/components/admin/CategoryForm";
 import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
 import { updateCategoryAction, deleteCategoryAction } from "../actions";
+import { getLocale } from "@/i18n/locale";
+import { getDictionary } from "@/i18n/dictionaries";
 
-export const metadata: Metadata = {
-  title: "Edit category",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  return { title: getDictionary(locale).admin.categories.editTitle };
+}
 
 export default async function EditCategoryPage(
   props: PageProps<"/admin/categories/[id]">
@@ -19,13 +22,18 @@ export default async function EditCategoryPage(
     notFound();
   }
 
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
+  const c = dict.admin.categories;
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold tracking-tight">Edit category</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">{c.editTitle}</h1>
         <ConfirmDeleteButton
-          label="Delete category"
-          confirmMessage={`Delete "${category.name}"?`}
+          label={c.deleteCategory}
+          deletingLabel={dict.common.deleting}
+          confirmMessage={c.deleteConfirm(category.name)}
           action={deleteCategoryAction.bind(null, category.id)}
           redirectTo="/admin/categories"
         />
@@ -38,7 +46,8 @@ export default async function EditCategoryPage(
           position: category.position,
           imageUrl: category.imageUrl,
         }}
-        submitLabel="Save changes"
+        submitLabel={c.saveChanges}
+        dict={{ form: c.form, common: dict.common }}
       />
     </div>
   );

@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { getLocale } from "@/i18n/locale";
+import { getDictionary } from "@/i18n/dictionaries";
 
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
@@ -11,6 +13,9 @@ function StatCard({ label, value }: { label: string; value: string }) {
 }
 
 export default async function AdminDashboardPage() {
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
+
   const [
     bookingCount,
     pendingCount,
@@ -47,26 +52,28 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="flex flex-col gap-8">
-      <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">{dict.admin.dashboard.title}</h1>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <StatCard label="Total bookings" value={String(bookingCount)} />
-        <StatCard label="Pending" value={String(pendingCount)} />
-        <StatCard label="Customers" value={String(customerCount)} />
-        <StatCard label="Products" value={String(productCount)} />
+        <StatCard label={dict.admin.dashboard.totalBookings} value={String(bookingCount)} />
+        <StatCard label={dict.admin.dashboard.pending} value={String(pendingCount)} />
+        <StatCard label={dict.admin.dashboard.customers} value={String(customerCount)} />
+        <StatCard label={dict.admin.dashboard.products} value={String(productCount)} />
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Recent bookings</h2>
+            <h2 className="text-lg font-semibold">{dict.admin.dashboard.recentBookings}</h2>
             <Link href="/admin/bookings" className="text-sm hover:underline">
-              View all
+              {dict.common.viewAll}
             </Link>
           </div>
           <ul className="flex flex-col divide-y divide-border-subtle rounded-2xl border border-border-subtle">
             {recentBookings.length === 0 && (
-              <li className="p-4 text-sm text-foreground/60">No bookings yet.</li>
+              <li className="p-4 text-sm text-foreground/60">
+                {dict.admin.dashboard.noBookingsYet}
+              </li>
             )}
             {recentBookings.map((booking) => (
               <li key={booking.id}>
@@ -80,7 +87,7 @@ export default async function AdminDashboardPage() {
                       {booking.product.name}
                     </span>
                   </div>
-                  <span className="font-semibold">{booking.status}</span>
+                  <span className="font-semibold">{dict.bookingStatus[booking.status]}</span>
                 </Link>
               </li>
             ))}
@@ -88,10 +95,12 @@ export default async function AdminDashboardPage() {
         </div>
 
         <div className="flex flex-col gap-3">
-          <h2 className="text-lg font-semibold">Most-booked products</h2>
+          <h2 className="text-lg font-semibold">{dict.admin.dashboard.mostBooked}</h2>
           <ul className="flex flex-col divide-y divide-border-subtle rounded-2xl border border-border-subtle">
             {topProductsWithCount.length === 0 && (
-              <li className="p-4 text-sm text-foreground/60">No bookings yet.</li>
+              <li className="p-4 text-sm text-foreground/60">
+                {dict.admin.dashboard.noBookingsYet}
+              </li>
             )}
             {topProductsWithCount.map(({ product, quantity }) =>
               product ? (
@@ -101,7 +110,9 @@ export default async function AdminDashboardPage() {
                     className="flex items-center justify-between gap-4 p-4 text-sm hover:bg-surface"
                   >
                     <span className="font-medium">{product.name}</span>
-                    <span className="text-foreground/60">{quantity} requested</span>
+                    <span className="text-foreground/60">
+                      {dict.admin.dashboard.requested(quantity)}
+                    </span>
                   </Link>
                 </li>
               ) : null

@@ -3,15 +3,18 @@
 import { useRef, useState } from "react";
 import type { PutBlobResult } from "@vercel/blob";
 import { Upload, X } from "lucide-react";
+import type { Dictionary } from "@/i18n/dictionaries";
 
 export function SingleImageField({
   name,
   label,
   defaultUrl = "",
+  dict,
 }: {
   name: string;
   label: string;
   defaultUrl?: string;
+  dict: Dictionary["common"];
 }) {
   const [url, setUrl] = useState(defaultUrl);
   const [isUploading, setIsUploading] = useState(false);
@@ -72,7 +75,7 @@ export function SingleImageField({
           <button
             type="button"
             onClick={() => setUrl("")}
-            aria-label="Remove image"
+            aria-label={dict.removeImage}
             className="rounded-full p-2 text-foreground/50 hover:bg-surface hover:text-danger"
           >
             <X size={16} />
@@ -96,7 +99,7 @@ export function SingleImageField({
         className="flex w-fit items-center gap-1.5 rounded-full bg-foreground px-3 py-1.5 text-sm text-background hover:opacity-90 disabled:opacity-50"
       >
         <Upload size={14} />
-        {isUploading ? "Uploading..." : "Upload photo"}
+        {isUploading ? dict.uploading : dict.upload}
       </button>
     </div>
   );

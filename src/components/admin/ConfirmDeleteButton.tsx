@@ -8,11 +8,13 @@ export function ConfirmDeleteButton({
   action,
   confirmMessage,
   label = "Delete",
+  deletingLabel = "Deleting...",
   redirectTo,
 }: {
   action: () => Promise<{ error?: string } | undefined>;
   confirmMessage: string;
   label?: string;
+  deletingLabel?: string;
   redirectTo?: string;
 }) {
   const router = useRouter();
@@ -41,7 +43,7 @@ export function ConfirmDeleteButton({
         className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm text-danger hover:bg-danger/10 disabled:opacity-50"
       >
         <Trash2 size={14} />
-        {isPending ? "Deleting..." : label}
+        {isPending ? deletingLabel : label}
       </button>
       {error && <span className="text-xs text-danger">{error}</span>}
     </div>

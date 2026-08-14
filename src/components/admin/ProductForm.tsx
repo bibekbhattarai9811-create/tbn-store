@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import { Button } from "@/components/Button";
 import { ProductImagesField } from "@/components/admin/ProductImagesField";
 import type { ProductActionState } from "@/app/admin/products/actions";
+import type { Dictionary } from "@/i18n/dictionaries";
 
 function slugify(value: string) {
   return value
@@ -36,6 +37,7 @@ export function ProductForm({
   categories,
   defaultValues,
   submitLabel,
+  dict,
 }: {
   action: (
     prevState: ProductActionState,
@@ -44,7 +46,9 @@ export function ProductForm({
   categories: { id: string; name: string }[];
   defaultValues?: ProductFormValues;
   submitLabel: string;
+  dict: Pick<Dictionary["admin"]["products"], "form"> & { common: Dictionary["common"] };
 }) {
+  const { form, common } = dict;
   const [state, formAction, isPending] = useActionState(action, undefined);
   const [name, setName] = useState(defaultValues?.name ?? "");
   const [slug, setSlug] = useState(defaultValues?.slug ?? "");
@@ -61,7 +65,7 @@ export function ProductForm({
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5">
           <label htmlFor="name" className="text-sm font-medium">
-            Name
+            {form.name}
           </label>
           <input
             id="name"
@@ -78,7 +82,7 @@ export function ProductForm({
 
         <div className="flex flex-col gap-1.5">
           <label htmlFor="slug" className="text-sm font-medium">
-            Slug
+            {form.slug}
           </label>
           <input
             id="slug"
@@ -96,7 +100,7 @@ export function ProductForm({
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="description" className="text-sm font-medium">
-          Description
+          {form.description}
         </label>
         <textarea
           id="description"
@@ -111,7 +115,7 @@ export function ProductForm({
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <div className="flex flex-col gap-1.5">
           <label htmlFor="price" className="text-sm font-medium">
-            Price (Rs)
+            {form.price}
           </label>
           <input
             id="price"
@@ -127,7 +131,7 @@ export function ProductForm({
 
         <div className="flex flex-col gap-1.5">
           <label htmlFor="salePrice" className="text-sm font-medium">
-            Sale price (Rs)
+            {form.salePrice}
           </label>
           <input
             id="salePrice"
@@ -142,7 +146,7 @@ export function ProductForm({
 
         <div className="flex flex-col gap-1.5">
           <label htmlFor="stock" className="text-sm font-medium">
-            Stock
+            {form.stock}
           </label>
           <input
             id="stock"
@@ -157,7 +161,7 @@ export function ProductForm({
 
         <div className="flex flex-col gap-1.5">
           <label htmlFor="sku" className="text-sm font-medium">
-            SKU
+            {form.sku}
           </label>
           <input
             id="sku"
@@ -172,7 +176,7 @@ export function ProductForm({
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5">
           <label htmlFor="brand" className="text-sm font-medium">
-            Brand
+            {form.brand}
           </label>
           <input
             id="brand"
@@ -184,7 +188,7 @@ export function ProductForm({
 
         <div className="flex flex-col gap-1.5">
           <label htmlFor="categoryId" className="text-sm font-medium">
-            Category
+            {form.category}
           </label>
           <select
             id="categoryId"
@@ -194,7 +198,7 @@ export function ProductForm({
             className={inputClasses}
           >
             <option value="" disabled>
-              Select a category
+              {form.selectCategory}
             </option>
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
@@ -207,18 +211,16 @@ export function ProductForm({
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="sizes" className="text-sm font-medium">
-          Available sizes
+          {form.sizes}
         </label>
         <input
           id="sizes"
           name="sizes"
-          placeholder="2-3Y, 3-4Y, 4-5Y, 5-6Y"
+          placeholder={form.sizesPlaceholder}
           defaultValue={defaultValues?.sizes.join(", ") ?? ""}
           className={inputClasses}
         />
-        <p className="text-xs text-foreground/50">
-          Comma-separated. Leave blank if this product doesn&apos;t have sizes.
-        </p>
+        <p className="text-xs text-foreground/50">{form.sizesHint}</p>
       </div>
 
       <label className="flex w-fit items-center gap-2 text-sm font-medium">
@@ -228,13 +230,13 @@ export function ProductForm({
           defaultChecked={defaultValues?.featured}
           className="h-4 w-4 rounded border-border-subtle accent-accent"
         />
-        Featured on homepage
+        {form.featured}
       </label>
 
-      <ProductImagesField defaultImages={defaultValues?.images} />
+      <ProductImagesField defaultImages={defaultValues?.images} dict={common} />
 
       <Button type="submit" size="lg" className="self-start" disabled={isPending}>
-        {isPending ? "Saving..." : submitLabel}
+        {isPending ? common.saving : submitLabel}
       </Button>
     </form>
   );

@@ -4,10 +4,13 @@ import { ProductFilters } from "@/components/ProductFilters";
 import { ProductGrid } from "@/components/ProductGrid";
 import { getProducts } from "@/lib/products";
 import type { Product } from "@/types/product";
+import { getLocale } from "@/i18n/locale";
+import { getDictionary } from "@/i18n/dictionaries";
 
-export const metadata: Metadata = {
-  title: "Shop all products",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  return { title: getDictionary(locale).products.pageTitle };
+}
 
 function sortProducts(products: Product[], sort: string | undefined) {
   const sorted = [...products];
@@ -38,14 +41,26 @@ export default async function ProductsPage(props: PageProps<"/products">) {
 
   const filtered = await getProducts({ q });
   const products = sortProducts(filtered, sort);
+  const locale = await getLocale();
+  const dict = getDictionary(locale);
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-10 sm:px-6 lg:px-8">
-      <h1 className="text-2xl font-semibold tracking-tight">Shop all products</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">{dict.products.pageTitle}</h1>
       <Suspense fallback={<div className="h-11" />}>
-        <ProductFilters resultCount={products.length} />
+        <ProductFilters
+          resultLabel={dict.products.resultCount(products.length)}
+          dict={{
+            searchPlaceholder: dict.products.searchPlaceholder,
+            sortFeatured: dict.products.sortFeatured,
+            sortPriceAsc: dict.products.sortPriceAsc,
+            sortPriceDesc: dict.products.sortPriceDesc,
+            sortRating: dict.products.sortRating,
+            sortNewest: dict.products.sortNewest,
+          }}
+        />
       </Suspense>
-      <ProductGrid products={products} />
+      <ProductGrid products={products} dict={dict} />
     </div>
   );
 }
