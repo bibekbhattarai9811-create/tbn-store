@@ -26,12 +26,34 @@ export async function generateMetadata(
 
   const category = await getCategoryBySlug(slug);
   if (category) {
-    return { title: category.name };
+    const description = `Shop ${category.name} for kids at TBN Store.`;
+    return {
+      title: category.name,
+      description,
+      openGraph: { title: category.name, description, type: "website" },
+      twitter: { card: "summary", title: category.name, description },
+    };
   }
 
   const product = await getProductBySlug(slug);
   if (product) {
-    return { title: product.name, description: product.description };
+    const image = product.images[0]?.url;
+    return {
+      title: product.name,
+      description: product.description,
+      openGraph: {
+        title: product.name,
+        description: product.description,
+        type: "website",
+        images: image ? [{ url: image }] : undefined,
+      },
+      twitter: {
+        card: image ? "summary_large_image" : "summary",
+        title: product.name,
+        description: product.description,
+        images: image ? [image] : undefined,
+      },
+    };
   }
 
   return {};
@@ -110,9 +132,24 @@ export default async function ProductOrCategoryPage(
           {product.description}
         </p>
 
+        {product.sizes.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2 text-sm">
+            <span className="text-foreground/50">Available sizes:</span>
+            {product.sizes.map((size) => (
+              <span
+                key={size}
+                className="rounded-full border border-border-subtle px-3 py-1 text-xs font-medium"
+              >
+                {size}
+              </span>
+            ))}
+          </div>
+        )}
+
         {session?.user ? (
           <BookingForm
             productId={product.id}
+            sizes={product.sizes}
             defaultName={session.user.name ?? undefined}
             defaultEmail={session.user.email ?? undefined}
           />

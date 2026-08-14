@@ -29,6 +29,14 @@ function parseFeatured(raw: FormDataEntryValue | null): boolean {
   return raw != null;
 }
 
+function parseSizes(raw: FormDataEntryValue | null): string[] {
+  if (typeof raw !== "string") return [];
+  return raw
+    .split(",")
+    .map((size) => size.trim())
+    .filter(Boolean);
+}
+
 function parseProductForm(formData: FormData) {
   return productSchema.safeParse({
     name: formData.get("name"),
@@ -61,6 +69,7 @@ export async function createProductAction(
 
   const images = parseImages(formData.get("images"));
   const featured = parseFeatured(formData.get("featured"));
+  const sizes = parseSizes(formData.get("sizes"));
 
   let productId: string;
   try {
@@ -69,6 +78,7 @@ export async function createProductAction(
         ...parsed.data,
         salePrice,
         featured,
+        sizes,
         images: {
           create: images.map((url, index) => ({
             url,
@@ -113,6 +123,7 @@ export async function updateProductAction(
 
   const images = parseImages(formData.get("images"));
   const featured = parseFeatured(formData.get("featured"));
+  const sizes = parseSizes(formData.get("sizes"));
 
   try {
     await prisma.product.update({
@@ -121,6 +132,7 @@ export async function updateProductAction(
         ...parsed.data,
         salePrice,
         featured,
+        sizes,
         images: {
           deleteMany: {},
           create: images.map((url, index) => ({

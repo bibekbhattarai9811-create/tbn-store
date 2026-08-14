@@ -20,6 +20,7 @@ export type Product = {
   stock: number;
   brand: string | null;
   featured: boolean;
+  sizes: string[];
   category: Category;
   images: ProductImage[];
   avgRating: number | null;

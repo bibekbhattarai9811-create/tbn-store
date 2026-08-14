@@ -18,7 +18,7 @@ export async function Footer() {
             className="h-24 w-24 object-contain"
           />
           <p className="text-sm text-foreground/60">
-            Cute, comfortable clothing for every little adventure.
+            Kids clothing, booked online and confirmed by phone — based in Nepal.
           </p>
         </div>
 
@@ -55,11 +55,18 @@ export async function Footer() {
 
         <div className="flex flex-col gap-2">
           <span className="text-sm font-medium">Company</span>
-          <span className="text-sm text-foreground/60">About</span>
+          <Link href="/about" className="text-sm text-foreground/60 hover:text-foreground">
+            About
+          </Link>
           <Link href="/contact" className="text-sm text-foreground/60 hover:text-foreground">
             Contact
           </Link>
-          <span className="text-sm text-foreground/60">Shipping & Returns</span>
+          <Link
+            href="/shipping-returns"
+            className="text-sm text-foreground/60 hover:text-foreground"
+          >
+            Shipping & Returns
+          </Link>
           <Link href="/privacy" className="text-sm text-foreground/60 hover:text-foreground">
             Privacy Policy
           </Link>

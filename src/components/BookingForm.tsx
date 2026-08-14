@@ -11,10 +11,12 @@ const inputClasses =
 
 export function BookingForm({
   productId,
+  sizes,
   defaultName,
   defaultEmail,
 }: {
   productId: string;
+  sizes: string[];
   defaultName?: string;
   defaultEmail?: string;
 }) {
@@ -45,6 +47,30 @@ export function BookingForm({
             <p className="rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger">
               {state.error}
             </p>
+          )}
+
+          {sizes.length > 0 && (
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="size" className="text-sm font-medium">
+                Size
+              </label>
+              <select
+                id="size"
+                name="size"
+                required
+                defaultValue=""
+                className={inputClasses}
+              >
+                <option value="" disabled>
+                  Select a size
+                </option>
+                {sizes.map((size) => (
+                  <option key={size} value={size}>
+                    {size}
+                  </option>
+                ))}
+              </select>
+            </div>
           )}
 
           <div className="flex flex-col gap-1.5">

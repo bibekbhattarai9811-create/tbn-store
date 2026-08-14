@@ -83,6 +83,7 @@ export default async function AdminBookingsPage(props: PageProps<"/admin/booking
             <tr>
               <th className="px-4 py-3">Customer</th>
               <th className="px-4 py-3">Product</th>
+              <th className="px-4 py-3">Size</th>
               <th className="px-4 py-3">Qty</th>
               <th className="px-4 py-3">Date</th>
               <th className="px-4 py-3">Status</th>
@@ -101,6 +102,7 @@ export default async function AdminBookingsPage(props: PageProps<"/admin/booking
                   </Link>
                 </td>
                 <td className="px-4 py-3">{booking.product.name}</td>
+                <td className="px-4 py-3 text-foreground/60">{booking.size ?? "—"}</td>
                 <td className="px-4 py-3">{booking.quantity}</td>
                 <td className="px-4 py-3 text-foreground/60">
                   {booking.createdAt.toLocaleDateString()}
@@ -110,7 +112,7 @@ export default async function AdminBookingsPage(props: PageProps<"/admin/booking
             ))}
             {bookings.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-foreground/60">
+                <td colSpan={6} className="px-4 py-8 text-center text-foreground/60">
                   No bookings found.
                 </td>
               </tr>

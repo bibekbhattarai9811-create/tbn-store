@@ -45,3 +45,6 @@ next-env.d.ts
 
 .vercel
 .env*
+
+# local source-photo backup, not part of the app
+/product image/

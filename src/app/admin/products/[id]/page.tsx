@@ -53,6 +53,7 @@ export default async function EditProductPage(
           categoryId: product.categoryId,
           featured: product.featured,
           images: product.images.map((image) => image.url),
+          sizes: product.sizes,
         }}
       />
     </div>

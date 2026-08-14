@@ -28,6 +28,7 @@ type ProductFormValues = {
   categoryId: string;
   featured: boolean;
   images: string[];
+  sizes: string[];
 };
 
 export function ProductForm({
@@ -202,6 +203,22 @@ export function ProductForm({
             ))}
           </select>
         </div>
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="sizes" className="text-sm font-medium">
+          Available sizes
+        </label>
+        <input
+          id="sizes"
+          name="sizes"
+          placeholder="2-3Y, 3-4Y, 4-5Y, 5-6Y"
+          defaultValue={defaultValues?.sizes.join(", ") ?? ""}
+          className={inputClasses}
+        />
+        <p className="text-xs text-foreground/50">
+          Comma-separated. Leave blank if this product doesn&apos;t have sizes.
+        </p>
       </div>
 
       <label className="flex w-fit items-center gap-2 text-sm font-medium">

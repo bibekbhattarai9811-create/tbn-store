@@ -47,6 +47,7 @@ export const categorySchema = z.object({
 export const bookingSchema = z.object({
   productId: z.string().min(1),
   quantity: z.coerce.number().int().positive("Quantity must be at least 1"),
+  size: z.string().trim().max(20).optional(),
   fullName: z.string().trim().min(1, "Full name is required").max(150),
   phone: z
     .string()

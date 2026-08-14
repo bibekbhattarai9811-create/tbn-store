@@ -69,7 +69,7 @@ export default async function AdminBookingDetailPage(
                 {booking.product.name}
               </Link>
               <span className="text-xs text-foreground/50">
-                Quantity requested: {booking.quantity}
+                {booking.size && `Size: ${booking.size} · `}Quantity requested: {booking.quantity}
               </span>
             </div>
           </div>

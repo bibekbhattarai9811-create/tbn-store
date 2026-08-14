@@ -14,13 +14,31 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteDescription =
+  "TBN Store — sweaters, tracksuits, and matching outfit sets for kids. Browse online, book what you like, and we'll call to confirm sizing and delivery.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL("https://tbnstore.vercel.app"),
   title: {
     default: "TBN Store — Kids Clothing Store",
     template: "%s | TBN Store",
   },
-  description:
-    "Adorable, comfortable kids clothing at TBN Store — dresses, hoodies, tees, outerwear, and more.",
+  description: siteDescription,
+  openGraph: {
+    title: "TBN Store — Kids Clothing Store",
+    description: siteDescription,
+    url: "/",
+    siteName: "TBN Store",
+    images: [{ url: "/logo.png", width: 1254, height: 1254, alt: "TBN Store" }],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "TBN Store — Kids Clothing Store",
+    description: siteDescription,
+    images: ["/logo.png"],
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

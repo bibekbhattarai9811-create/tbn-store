@@ -20,6 +20,7 @@ export async function createBookingAction(
   const parsed = bookingSchema.safeParse({
     productId: formData.get("productId"),
     quantity: formData.get("quantity"),
+    size: (formData.get("size") as string) || undefined,
     fullName: formData.get("fullName"),
     phone: formData.get("phone"),
     email: (formData.get("email") as string) || undefined,
@@ -50,6 +51,7 @@ export async function createBookingAction(
     data: {
       productId: parsed.data.productId,
       quantity: parsed.data.quantity,
+      size: parsed.data.size || null,
       fullName: parsed.data.fullName,
       phone: parsed.data.phone,
       email: parsed.data.email || null,

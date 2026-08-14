@@ -28,6 +28,7 @@ function toProduct(record: ProductWithRelations): Product {
     stock: record.stock,
     brand: record.brand,
     featured: record.featured,
+    sizes: record.sizes,
     category: {
       id: record.category.id,
       name: record.category.name,

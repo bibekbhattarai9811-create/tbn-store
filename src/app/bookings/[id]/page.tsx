@@ -71,7 +71,7 @@ export default async function BookingConfirmationPage(
             {booking.product.name}
           </Link>
           <span className="text-sm text-foreground/60">
-            Quantity: {booking.quantity}
+            {booking.size && `Size: ${booking.size} · `}Quantity: {booking.quantity}
           </span>
         </div>
       </div>

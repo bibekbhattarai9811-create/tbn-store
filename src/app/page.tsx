@@ -26,11 +26,12 @@ export default async function Home() {
         />
         <div className="relative mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 sm:px-6 lg:px-8">
           <h1 className="max-w-lg text-4xl font-semibold tracking-tight sm:text-5xl">
-            Adorable styles for little ones
+            Cosy knitwear and everyday outfits for kids on the move
           </h1>
           <p className="max-w-md text-lg text-foreground/70">
-            Cute, comfortable kids clothing — dresses, hoodies, tees, and
-            outerwear for every little adventure.
+            Sweaters, tracksuits, and matching sets for cooler days. Find
+            something you like, book it, and we&apos;ll call to confirm
+            sizing and delivery.
           </p>
           <div>
             <Link href="/products" className={buttonClasses("primary", "lg")}>
