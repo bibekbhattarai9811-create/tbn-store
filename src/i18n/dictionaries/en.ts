@@ -24,6 +24,7 @@ export const en = {
     signOut: "Sign out",
     signIn: "Account",
     toggleMenu: "Toggle menu",
+    priceCheck: "Price check",
   },
   footer: {
     tagline: "Kids clothing, booked online and confirmed by phone — based in Nepal.",
@@ -200,6 +201,18 @@ export const en = {
     goHome: "Go to homepage",
     browseProducts: "Browse products",
   },
+  helper: {
+    pageTitle: "Price check",
+    subtitle: "Cost price and current selling price for every product, so you can decide what margin to sell at.",
+    searchPlaceholder: "Search by name or product number",
+    colProduct: "Product",
+    colNumber: "Product number",
+    colCostPrice: "Cost price",
+    colSalePrice: "Selling price",
+    colMargin: "Margin",
+    notSet: "Not set",
+    noProductsFound: "No products found.",
+  },
   admin: {
     nav: {
       dashboard: "Dashboard",
@@ -254,6 +267,8 @@ export const en = {
         sizesPlaceholder: "2-3Y, 3-4Y, 4-5Y, 5-6Y",
         sizesHint: "Comma-separated. Leave blank if this product doesn't have sizes.",
         featured: "Featured on homepage",
+        costPrice: "Cost price (Rs)",
+        costPriceHint: "Internal only — never shown to customers. Used for margin checks.",
       },
     },
     categories: {
@@ -317,6 +332,11 @@ export const en = {
       bookings: "Bookings",
       noBookingsYet: "No bookings yet.",
       qty: "Qty {n}",
+      changeRole: "Access level",
+      updateRole: "Update role",
+      updatingRole: "Updating...",
+      roleUpdated: "Role updated.",
+      cannotChangeOwnRole: "You can't change your own role.",
     },
     reviews: {
       title: "Reviews",
@@ -351,6 +371,7 @@ export const en = {
     },
     role: {
       CUSTOMER: "Customer",
+      HELPER: "Helper",
       ADMIN: "Admin",
     },
   },

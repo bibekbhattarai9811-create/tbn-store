@@ -20,3 +20,14 @@ export async function requireAdminAction() {
   }
   return session;
 }
+
+export async function requireHelperPage() {
+  const session = await auth();
+  if (!session?.user) {
+    redirect("/login?callbackUrl=/helper");
+  }
+  if (session.user.role !== "HELPER" && session.user.role !== "ADMIN") {
+    redirect("/");
+  }
+  return session;
+}

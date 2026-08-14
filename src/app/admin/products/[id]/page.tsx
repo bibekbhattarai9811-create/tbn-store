@@ -57,6 +57,7 @@ export default async function EditProductPage(
           description: product.description,
           price: product.price.toNumber(),
           salePrice: product.salePrice ? product.salePrice.toNumber() : null,
+          costPrice: product.costPrice ? product.costPrice.toNumber() : null,
           sku: product.sku,
           stock: product.stock,
           brand: product.brand,

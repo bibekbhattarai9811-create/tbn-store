@@ -42,14 +42,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     jwt: async ({ token, user }) => {
       if (user) {
         token.id = user.id as string;
-        token.role = user.role as "CUSTOMER" | "ADMIN";
+        token.role = user.role as "CUSTOMER" | "HELPER" | "ADMIN";
       }
       return token;
     },
     session: async ({ session, token }) => {
       if (session.user) {
         session.user.id = token.id as string;
-        session.user.role = token.role as "CUSTOMER" | "ADMIN";
+        session.user.role = token.role as "CUSTOMER" | "HELPER" | "ADMIN";
       }
       return session;
     },

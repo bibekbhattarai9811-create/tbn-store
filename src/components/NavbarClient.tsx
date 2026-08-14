@@ -13,7 +13,7 @@ import type { Dictionary } from "@/i18n/dictionaries";
 type SessionUser = {
   name?: string | null;
   email?: string | null;
-  role?: "CUSTOMER" | "ADMIN";
+  role?: "CUSTOMER" | "HELPER" | "ADMIN";
 } | null;
 
 export function NavbarClient({
@@ -89,6 +89,15 @@ export function NavbarClient({
                   {dict.admin}
                 </Link>
               )}
+              {user.role === "HELPER" && (
+                <Link
+                  href="/helper"
+                  className="hidden items-center gap-2 rounded-full px-3 py-2 text-sm hover:bg-surface sm:flex"
+                >
+                  <LayoutDashboard size={16} />
+                  {dict.priceCheck}
+                </Link>
+              )}
               <Link
                 href="/wishlist"
                 aria-label={dict.wishlist}
@@ -160,6 +169,17 @@ export function NavbarClient({
             >
               <LayoutDashboard size={16} />
               {dict.admin}
+            </Link>
+          )}
+
+          {user?.role === "HELPER" && (
+            <Link
+              href="/helper"
+              className="flex items-center gap-2 rounded-lg px-2 py-2 text-sm hover:bg-surface sm:hidden"
+              onClick={() => setMenuOpen(false)}
+            >
+              <LayoutDashboard size={16} />
+              {dict.priceCheck}
             </Link>
           )}
 

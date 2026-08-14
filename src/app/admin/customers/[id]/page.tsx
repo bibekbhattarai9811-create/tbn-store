@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/auth";
 import { getLocale } from "@/i18n/locale";
 import { getDictionary } from "@/i18n/dictionaries";
 import { tf } from "@/i18n/format";
+import { RoleForm } from "@/components/admin/RoleForm";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
@@ -27,9 +29,10 @@ export default async function AdminCustomerDetailPage(
     notFound();
   }
 
-  const locale = await getLocale();
+  const [locale, session] = await Promise.all([getLocale(), auth()]);
   const dict = await getDictionary(locale);
   const c = dict.admin.customers;
+  const isSelf = session?.user?.id === user.id;
 
   return (
     <div className="flex flex-col gap-8">
@@ -48,6 +51,24 @@ export default async function AdminCustomerDetailPage(
           <dd className="font-medium">{user.createdAt.toLocaleDateString()}</dd>
         </div>
       </dl>
+
+      <div className="max-w-xs">
+        {isSelf ? (
+          <p className="text-sm text-foreground/50">{c.cannotChangeOwnRole}</p>
+        ) : (
+          <RoleForm
+            userId={user.id}
+            currentRole={user.role}
+            roleLabels={dict.admin.role}
+            dict={{
+              changeRole: c.changeRole,
+              updateRole: c.updateRole,
+              updatingRole: c.updatingRole,
+              roleUpdated: c.roleUpdated,
+            }}
+          />
+        )}
+      </div>
 
       <div className="flex flex-col gap-3">
         <h2 className="text-lg font-semibold">{c.bookings}</h2>

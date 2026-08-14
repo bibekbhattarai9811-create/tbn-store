@@ -25,6 +25,13 @@ function parseSalePrice(raw: FormDataEntryValue | null): number | null | "invali
   return value;
 }
 
+function parseCostPrice(raw: FormDataEntryValue | null): number | null | "invalid" {
+  if (typeof raw !== "string" || raw.trim() === "") return null;
+  const value = Number(raw);
+  if (!Number.isFinite(value) || value <= 0) return "invalid";
+  return value;
+}
+
 function parseFeatured(raw: FormDataEntryValue | null): boolean {
   return raw != null;
 }
@@ -67,6 +74,11 @@ export async function createProductAction(
     return { error: "Sale price must be a positive number" };
   }
 
+  const costPrice = parseCostPrice(formData.get("costPrice"));
+  if (costPrice === "invalid") {
+    return { error: "Cost price must be a positive number" };
+  }
+
   const images = parseImages(formData.get("images"));
   const featured = parseFeatured(formData.get("featured"));
   const sizes = parseSizes(formData.get("sizes"));
@@ -77,6 +89,7 @@ export async function createProductAction(
       data: {
         ...parsed.data,
         salePrice,
+        costPrice,
         featured,
         sizes,
         images: {
@@ -121,6 +134,11 @@ export async function updateProductAction(
     return { error: "Sale price must be a positive number" };
   }
 
+  const costPrice = parseCostPrice(formData.get("costPrice"));
+  if (costPrice === "invalid") {
+    return { error: "Cost price must be a positive number" };
+  }
+
   const images = parseImages(formData.get("images"));
   const featured = parseFeatured(formData.get("featured"));
   const sizes = parseSizes(formData.get("sizes"));
@@ -131,6 +149,7 @@ export async function updateProductAction(
       data: {
         ...parsed.data,
         salePrice,
+        costPrice,
         featured,
         sizes,
         images: {

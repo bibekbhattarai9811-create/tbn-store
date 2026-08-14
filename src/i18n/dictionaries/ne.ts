@@ -26,6 +26,7 @@ export const ne: typeof en = {
     signOut: "साइन आउट",
     signIn: "खाता",
     toggleMenu: "मेनु खोल्नुहोस्",
+    priceCheck: "मूल्य जाँच",
   },
   footer: {
     tagline: "नेपालमै आधारित बालबालिकाको लुगा पसल — अनलाइन बुक गर्नुहोस्, फोनबाट पुष्टि गराउनुहोस्।",
@@ -202,6 +203,18 @@ export const ne: typeof en = {
     goHome: "गृहपृष्ठमा जानुहोस्",
     browseProducts: "सामानहरू हेर्नुहोस्",
   },
+  helper: {
+    pageTitle: "मूल्य जाँच",
+    subtitle: "हरेक सामानको लागत मूल्य र हालको बिक्री मूल्य — ताकि तपाईं कति नाफामा बेच्ने भनेर तय गर्न सक्नुहोस्।",
+    searchPlaceholder: "नाम वा प्रोडक्ट नम्बरले खोज्नुहोस्",
+    colProduct: "सामान",
+    colNumber: "प्रोडक्ट नम्बर",
+    colCostPrice: "लागत मूल्य",
+    colSalePrice: "बिक्री मूल्य",
+    colMargin: "नाफा",
+    notSet: "राखिएको छैन",
+    noProductsFound: "कुनै सामान फेला परेन।",
+  },
   admin: {
     nav: {
       dashboard: "ड्यासबोर्ड",
@@ -256,6 +269,8 @@ export const ne: typeof en = {
         sizesPlaceholder: "2-3Y, 3-4Y, 4-5Y, 5-6Y",
         sizesHint: "अल्पविरामले छुट्याउनुहोस्। यो प्रोडक्टको साइज नभए खाली छोड्नुहोस्।",
         featured: "गृहपृष्ठमा विशेष",
+        costPrice: "लागत मूल्य (रु)",
+        costPriceHint: "यो जानकारी भित्री प्रयोगका लागि मात्र हो — ग्राहकलाई कहिल्यै देखिँदैन। नाफा जाँच्न प्रयोग हुन्छ।",
       },
     },
     categories: {
@@ -319,6 +334,11 @@ export const ne: typeof en = {
       bookings: "बुकिङहरू",
       noBookingsYet: "अहिलेसम्म कुनै बुकिङ छैन।",
       qty: "परिमाण {n}",
+      changeRole: "पहुँच स्तर",
+      updateRole: "भूमिका अपडेट गर्नुहोस्",
+      updatingRole: "अपडेट हुँदैछ...",
+      roleUpdated: "भूमिका अपडेट भयो।",
+      cannotChangeOwnRole: "तपाईं आफ्नै भूमिका परिवर्तन गर्न सक्नुहुन्न।",
     },
     reviews: {
       title: "समीक्षाहरू",
@@ -353,6 +373,7 @@ export const ne: typeof en = {
     },
     role: {
       CUSTOMER: "ग्राहक",
+      HELPER: "हेल्पर",
       ADMIN: "एडमिन",
     },
   },

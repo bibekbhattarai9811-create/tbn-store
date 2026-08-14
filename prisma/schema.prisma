@@ -12,6 +12,7 @@ datasource db {
 
 enum Role {
   CUSTOMER
+  HELPER
   ADMIN
 }
 
@@ -61,6 +62,7 @@ model Product {
   description String
   price       Decimal  @db.Decimal(10, 2)
   salePrice   Decimal? @db.Decimal(10, 2)
+  costPrice   Decimal? @db.Decimal(10, 2)
   sku         String   @unique
   stock       Int      @default(0)
   brand       String?

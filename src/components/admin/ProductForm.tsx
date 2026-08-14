@@ -23,6 +23,7 @@ type ProductFormValues = {
   description: string;
   price: number;
   salePrice: number | null;
+  costPrice: number | null;
   sku: string;
   stock: number;
   brand: string | null;
@@ -207,6 +208,22 @@ export function ProductForm({
             ))}
           </select>
         </div>
+      </div>
+
+      <div className="flex flex-col gap-1.5 rounded-lg border border-dashed border-border-subtle p-3">
+        <label htmlFor="costPrice" className="text-sm font-medium">
+          {form.costPrice}
+        </label>
+        <input
+          id="costPrice"
+          name="costPrice"
+          type="number"
+          step="0.01"
+          min="0"
+          defaultValue={defaultValues?.costPrice ?? ""}
+          className={`${inputClasses} max-w-xs`}
+        />
+        <p className="text-xs text-foreground/50">{form.costPriceHint}</p>
       </div>
 
       <div className="flex flex-col gap-1.5">
