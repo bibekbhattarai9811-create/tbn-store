@@ -34,7 +34,7 @@ export default async function AdminBookingDetailPage(
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">
-            Booking #{booking.id.slice(-8).toUpperCase()}
+            Booking #{booking.bookingNumber}
           </h1>
           <p className="text-sm text-foreground/60">
             Received {booking.createdAt.toLocaleDateString()}

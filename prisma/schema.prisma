@@ -91,21 +91,22 @@ model ProductImage {
 }
 
 model Booking {
-  id        String        @id @default(cuid())
-  productId String
-  product   Product       @relation(fields: [productId], references: [id])
-  quantity  Int           @default(1)
-  size      String?
-  fullName  String
-  phone     String
-  email     String?
-  address   String
-  shopName  String?
-  status    BookingStatus @default(PENDING)
-  userId    String
-  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+  id            String        @id @default(cuid())
+  bookingNumber Int           @unique @default(autoincrement())
+  productId     String
+  product       Product       @relation(fields: [productId], references: [id])
+  quantity      Int           @default(1)
+  size          String?
+  fullName      String
+  phone         String
+  email         String?
+  address       String
+  shopName      String?
+  status        BookingStatus @default(PENDING)
+  userId        String
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 
   @@index([productId])
   @@index([userId])

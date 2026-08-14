@@ -71,7 +71,9 @@ export default async function AccountPage() {
                   className="flex items-center justify-between gap-4 p-4 text-sm hover:bg-surface"
                 >
                   <div className="flex flex-col">
-                    <span className="font-medium">{booking.product.name}</span>
+                    <span className="font-medium">
+                      #{booking.bookingNumber} · {booking.product.name}
+                    </span>
                     <span className="text-xs text-foreground/50">
                       {booking.createdAt.toLocaleDateString()} · Qty {booking.quantity}
                     </span>

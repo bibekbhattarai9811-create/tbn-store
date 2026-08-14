@@ -78,8 +78,8 @@ export default async function BookingConfirmationPage(
 
       <dl className="flex flex-col gap-2 rounded-2xl border border-border-subtle p-4 text-sm">
         <div className="flex justify-between gap-4">
-          <dt className="text-foreground/60">Booking reference</dt>
-          <dd className="font-medium">#{booking.id.slice(-8).toUpperCase()}</dd>
+          <dt className="text-foreground/60">Booking number</dt>
+          <dd className="font-medium">#{booking.bookingNumber}</dd>
         </div>
         <div className="flex justify-between gap-4">
           <dt className="text-foreground/60">Status</dt>

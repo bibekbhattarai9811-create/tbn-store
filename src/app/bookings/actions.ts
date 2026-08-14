@@ -5,6 +5,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { bookingSchema } from "@/lib/validation";
 import { domainCanReceiveEmail } from "@/lib/email-verify";
+import { sendNewBookingEmail } from "@/lib/email";
 
 export type BookingActionState = { error?: string } | undefined;
 
@@ -41,7 +42,7 @@ export async function createBookingAction(
 
   const product = await prisma.product.findUnique({
     where: { id: parsed.data.productId },
-    select: { id: true },
+    select: { id: true, name: true },
   });
   if (!product) {
     return { error: "This product is no longer available." };
@@ -59,6 +60,18 @@ export async function createBookingAction(
       shopName: parsed.data.shopName || null,
       userId: session.user.id,
     },
+  });
+
+  await sendNewBookingEmail({
+    bookingNumber: booking.bookingNumber,
+    productName: product.name,
+    size: booking.size,
+    quantity: booking.quantity,
+    fullName: booking.fullName,
+    phone: booking.phone,
+    email: booking.email,
+    address: booking.address,
+    shopName: booking.shopName,
   });
 
   redirect(`/bookings/${booking.id}`);

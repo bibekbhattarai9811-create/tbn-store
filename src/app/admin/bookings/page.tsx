@@ -81,6 +81,7 @@ export default async function AdminBookingsPage(props: PageProps<"/admin/booking
         <table className="w-full text-left text-sm">
           <thead className="border-b border-border-subtle bg-surface text-xs uppercase text-foreground/50">
             <tr>
+              <th className="px-4 py-3">#</th>
               <th className="px-4 py-3">Customer</th>
               <th className="px-4 py-3">Product</th>
               <th className="px-4 py-3">Size</th>
@@ -92,6 +93,7 @@ export default async function AdminBookingsPage(props: PageProps<"/admin/booking
           <tbody className="divide-y divide-border-subtle">
             {bookings.map((booking) => (
               <tr key={booking.id}>
+                <td className="px-4 py-3 text-foreground/60">#{booking.bookingNumber}</td>
                 <td className="px-4 py-3">
                   <Link
                     href={`/admin/bookings/${booking.id}`}
@@ -112,7 +114,7 @@ export default async function AdminBookingsPage(props: PageProps<"/admin/booking
             ))}
             {bookings.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-foreground/60">
+                <td colSpan={7} className="px-4 py-8 text-center text-foreground/60">
                   No bookings found.
                 </td>
               </tr>
