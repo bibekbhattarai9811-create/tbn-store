@@ -10,7 +10,7 @@ export async function Navbar() {
     auth(),
     getLocale(),
   ]);
-  const dict = getDictionary(locale);
+  const dict = await getDictionary(locale);
   return (
     <NavbarClient
       categories={categories}

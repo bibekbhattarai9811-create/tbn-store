@@ -7,10 +7,11 @@ import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
 import { deleteCategoryAction } from "./actions";
 import { getLocale } from "@/i18n/locale";
 import { getDictionary } from "@/i18n/dictionaries";
+import { tf } from "@/i18n/format";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
-  return { title: getDictionary(locale).admin.categories.title };
+  return { title: (await getDictionary(locale)).admin.categories.title };
 }
 
 export default async function AdminCategoriesPage() {
@@ -19,7 +20,7 @@ export default async function AdminCategoriesPage() {
     include: { _count: { select: { products: true } } },
   });
   const locale = await getLocale();
-  const dict = getDictionary(locale);
+  const dict = await getDictionary(locale);
   const c = dict.admin.categories;
 
   return (
@@ -71,7 +72,7 @@ export default async function AdminCategoriesPage() {
                       </Button>
                     </Link>
                     <ConfirmDeleteButton
-                      confirmMessage={c.deleteConfirm(category.name)}
+                      confirmMessage={tf(c.deleteConfirm, { name: category.name })}
                       action={deleteCategoryAction.bind(null, category.id)}
                       label={dict.common.delete}
                       deletingLabel={dict.common.deleting}

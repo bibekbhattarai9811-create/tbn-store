@@ -6,7 +6,7 @@ import { getDictionary } from "@/i18n/dictionaries";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
-  return { title: getDictionary(locale).admin.customers.title };
+  return { title: (await getDictionary(locale)).admin.customers.title };
 }
 
 export default async function AdminCustomersPage() {
@@ -15,7 +15,7 @@ export default async function AdminCustomersPage() {
     include: { _count: { select: { bookings: true } } },
   });
   const locale = await getLocale();
-  const dict = getDictionary(locale);
+  const dict = await getDictionary(locale);
   const c = dict.admin.customers;
 
   return (

@@ -8,10 +8,11 @@ import { prisma } from "@/lib/prisma";
 import { buttonClasses } from "@/components/Button";
 import { getLocale } from "@/i18n/locale";
 import { getDictionary } from "@/i18n/dictionaries";
+import { tf } from "@/i18n/format";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
-  return { title: getDictionary(locale).booking.received };
+  return { title: (await getDictionary(locale)).booking.received };
 }
 
 export default async function BookingConfirmationPage(
@@ -42,7 +43,7 @@ export default async function BookingConfirmationPage(
   }
 
   const locale = await getLocale();
-  const dict = getDictionary(locale);
+  const dict = await getDictionary(locale);
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-4 py-16 sm:px-6">
@@ -50,7 +51,7 @@ export default async function BookingConfirmationPage(
         <CheckCircle2 className="text-accent" size={40} />
         <h1 className="text-2xl font-semibold tracking-tight">{dict.booking.received}</h1>
         <p className="text-sm text-foreground/60">
-          {dict.booking.thanks(booking.fullName, booking.phone)}
+          {tf(dict.booking.thanks, { name: booking.fullName, phone: booking.phone })}
         </p>
       </div>
 

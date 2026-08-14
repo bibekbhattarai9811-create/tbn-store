@@ -20,6 +20,7 @@ import { isProductWishlisted } from "@/lib/wishlist";
 import { auth } from "@/auth";
 import { getLocale } from "@/i18n/locale";
 import { getDictionary } from "@/i18n/dictionaries";
+import { tfPlural } from "@/i18n/format";
 
 export async function generateMetadata(
   props: PageProps<"/products/[slug]">
@@ -66,7 +67,7 @@ export default async function ProductOrCategoryPage(
 ) {
   const { slug } = await props.params;
   const locale = await getLocale();
-  const dict = getDictionary(locale);
+  const dict = await getDictionary(locale);
 
   const category = await getCategoryBySlug(slug);
   if (category) {
@@ -75,7 +76,14 @@ export default async function ProductOrCategoryPage(
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-10 sm:px-6 lg:px-8">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">{category.name}</h1>
-          <p className="text-sm text-foreground/60">{dict.products.resultCount(products.length)}</p>
+          <p className="text-sm text-foreground/60">
+            {tfPlural(
+              products.length,
+              dict.products.resultCountOne,
+              dict.products.resultCountOther,
+              { n: products.length }
+            )}
+          </p>
         </div>
         <ProductGrid products={products} dict={dict} />
       </div>
@@ -203,13 +211,9 @@ export default async function ProductOrCategoryPage(
             productId={product.id}
             defaultRating={userReview?.rating}
             defaultComment={userReview?.comment}
-            rateLabels={[
-              dict.reviews.rateStars(1),
-              dict.reviews.rateStars(2),
-              dict.reviews.rateStars(3),
-              dict.reviews.rateStars(4),
-              dict.reviews.rateStars(5),
-            ]}
+            rateLabels={[1, 2, 3, 4, 5].map((n) =>
+              tfPlural(n, dict.reviews.rateStarOne, dict.reviews.rateStarOther, { n })
+            ) as [string, string, string, string, string]}
             dict={{
               yourRating: dict.reviews.yourRating,
               rateThis: dict.reviews.rateThis,

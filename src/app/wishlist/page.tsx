@@ -10,7 +10,7 @@ import { getDictionary } from "@/i18n/dictionaries";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
-  return { title: getDictionary(locale).wishlist.pageTitle };
+  return { title: (await getDictionary(locale)).wishlist.pageTitle };
 }
 
 export default async function WishlistPage() {
@@ -21,7 +21,7 @@ export default async function WishlistPage() {
 
   const products = await getWishlistProducts(session.user.id);
   const locale = await getLocale();
-  const dict = getDictionary(locale);
+  const dict = await getDictionary(locale);
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-10 sm:px-6 lg:px-8">

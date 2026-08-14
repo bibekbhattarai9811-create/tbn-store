@@ -23,6 +23,7 @@ export function AdminSidebar({
     { href: "/admin/reviews", label: dict.reviews },
     { href: "/admin/customers", label: dict.customers },
     { href: "/admin/settings", label: dict.settings },
+    { href: "/admin/translations", label: dict.translations },
   ];
 
   return (

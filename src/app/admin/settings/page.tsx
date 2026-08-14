@@ -7,13 +7,13 @@ import { getDictionary } from "@/i18n/dictionaries";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
-  return { title: getDictionary(locale).admin.settings.title };
+  return { title: (await getDictionary(locale)).admin.settings.title };
 }
 
 export default async function AdminSettingsPage() {
   const settings = await getSiteSettings();
   const locale = await getLocale();
-  const dict = getDictionary(locale);
+  const dict = await getDictionary(locale);
   const s = dict.admin.settings;
 
   return (

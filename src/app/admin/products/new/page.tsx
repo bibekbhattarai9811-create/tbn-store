@@ -7,13 +7,13 @@ import { getDictionary } from "@/i18n/dictionaries";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
-  return { title: getDictionary(locale).admin.products.newTitle };
+  return { title: (await getDictionary(locale)).admin.products.newTitle };
 }
 
 export default async function NewProductPage() {
   const categories = await prisma.category.findMany({ orderBy: { name: "asc" } });
   const locale = await getLocale();
-  const dict = getDictionary(locale);
+  const dict = await getDictionary(locale);
 
   return (
     <div className="flex flex-col gap-6">

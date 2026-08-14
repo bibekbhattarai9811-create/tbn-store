@@ -6,10 +6,11 @@ import { getProducts } from "@/lib/products";
 import type { Product } from "@/types/product";
 import { getLocale } from "@/i18n/locale";
 import { getDictionary } from "@/i18n/dictionaries";
+import { tfPlural } from "@/i18n/format";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
-  return { title: getDictionary(locale).products.pageTitle };
+  return { title: (await getDictionary(locale)).products.pageTitle };
 }
 
 function sortProducts(products: Product[], sort: string | undefined) {
@@ -42,14 +43,19 @@ export default async function ProductsPage(props: PageProps<"/products">) {
   const filtered = await getProducts({ q });
   const products = sortProducts(filtered, sort);
   const locale = await getLocale();
-  const dict = getDictionary(locale);
+  const dict = await getDictionary(locale);
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-10 sm:px-6 lg:px-8">
       <h1 className="text-2xl font-semibold tracking-tight">{dict.products.pageTitle}</h1>
       <Suspense fallback={<div className="h-11" />}>
         <ProductFilters
-          resultLabel={dict.products.resultCount(products.length)}
+          resultLabel={tfPlural(
+            products.length,
+            dict.products.resultCountOne,
+            dict.products.resultCountOther,
+            { n: products.length }
+          )}
           dict={{
             searchPlaceholder: dict.products.searchPlaceholder,
             sortFeatured: dict.products.sortFeatured,

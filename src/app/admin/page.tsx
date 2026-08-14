@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { getLocale } from "@/i18n/locale";
 import { getDictionary } from "@/i18n/dictionaries";
+import { tf } from "@/i18n/format";
 
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
@@ -14,7 +15,7 @@ function StatCard({ label, value }: { label: string; value: string }) {
 
 export default async function AdminDashboardPage() {
   const locale = await getLocale();
-  const dict = getDictionary(locale);
+  const dict = await getDictionary(locale);
 
   const [
     bookingCount,
@@ -111,7 +112,7 @@ export default async function AdminDashboardPage() {
                   >
                     <span className="font-medium">{product.name}</span>
                     <span className="text-foreground/60">
-                      {dict.admin.dashboard.requested(quantity)}
+                      {tf(dict.admin.dashboard.requested, { n: quantity })}
                     </span>
                   </Link>
                 </li>

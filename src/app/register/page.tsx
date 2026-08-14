@@ -5,11 +5,11 @@ import { RegisterClient } from "./RegisterClient";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
-  return { title: getDictionary(locale).auth.registerTitle };
+  return { title: (await getDictionary(locale)).auth.registerTitle };
 }
 
 export default async function RegisterPage() {
   const locale = await getLocale();
-  const dict = getDictionary(locale).auth;
+  const dict = (await getDictionary(locale)).auth;
   return <RegisterClient dict={dict} />;
 }

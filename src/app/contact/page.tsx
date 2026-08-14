@@ -5,7 +5,7 @@ import { getDictionary } from "@/i18n/dictionaries";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
-  return { title: getDictionary(locale).contact.pageTitle };
+  return { title: (await getDictionary(locale)).contact.pageTitle };
 }
 
 const rowClasses = "flex items-start gap-3";
@@ -14,7 +14,7 @@ const valueClasses = "text-sm font-medium";
 
 export default async function ContactPage() {
   const locale = await getLocale();
-  const dict = getDictionary(locale).contact;
+  const dict = (await getDictionary(locale)).contact;
 
   return (
     <div className="mx-auto flex w-full max-w-xl flex-col gap-8 px-4 py-16 sm:px-6">

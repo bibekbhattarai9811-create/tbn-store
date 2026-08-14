@@ -10,7 +10,7 @@ import { getDictionary } from "@/i18n/dictionaries";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
-  return { title: getDictionary(locale).account.pageTitle };
+  return { title: (await getDictionary(locale)).account.pageTitle };
 }
 
 export default async function AccountPage() {
@@ -21,7 +21,7 @@ export default async function AccountPage() {
 
   const { user } = session;
   const locale = await getLocale();
-  const dict = getDictionary(locale);
+  const dict = await getDictionary(locale);
 
   const bookings = await prisma.booking.findMany({
     where: { userId: user.id },

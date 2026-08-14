@@ -6,10 +6,11 @@ import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
 import { updateProductAction, deleteProductAction } from "../actions";
 import { getLocale } from "@/i18n/locale";
 import { getDictionary } from "@/i18n/dictionaries";
+import { tf } from "@/i18n/format";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
-  return { title: getDictionary(locale).admin.products.editTitle };
+  return { title: (await getDictionary(locale)).admin.products.editTitle };
 }
 
 export default async function EditProductPage(
@@ -30,7 +31,7 @@ export default async function EditProductPage(
   }
 
   const locale = await getLocale();
-  const dict = getDictionary(locale);
+  const dict = await getDictionary(locale);
   const p = dict.admin.products;
 
   return (
@@ -40,7 +41,7 @@ export default async function EditProductPage(
         <ConfirmDeleteButton
           label={p.deleteProduct}
           deletingLabel={dict.common.deleting}
-          confirmMessage={p.deleteConfirmEdit(product.name)}
+          confirmMessage={tf(p.deleteConfirm, { name: product.name })}
           action={deleteProductAction.bind(null, product.id)}
           redirectTo="/admin/products"
         />

@@ -147,3 +147,9 @@ model WishlistItem {
   @@unique([wishlistId, productId])
   @@index([productId])
 }
+
+model Translation {
+  key       String   @id
+  value     String   @db.Text
+  updatedAt DateTime @updatedAt
+}

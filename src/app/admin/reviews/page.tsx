@@ -5,10 +5,11 @@ import { ConfirmDeleteButton } from "@/components/admin/ConfirmDeleteButton";
 import { deleteReviewAction } from "./actions";
 import { getLocale } from "@/i18n/locale";
 import { getDictionary } from "@/i18n/dictionaries";
+import { tf } from "@/i18n/format";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
-  return { title: getDictionary(locale).admin.reviews.title };
+  return { title: (await getDictionary(locale)).admin.reviews.title };
 }
 
 export default async function AdminReviewsPage() {
@@ -20,7 +21,7 @@ export default async function AdminReviewsPage() {
     },
   });
   const locale = await getLocale();
-  const dict = getDictionary(locale);
+  const dict = await getDictionary(locale);
   const r = dict.admin.reviews;
 
   return (
@@ -70,7 +71,7 @@ export default async function AdminReviewsPage() {
                 <td className="px-4 py-3">
                   <div className="flex justify-end">
                     <ConfirmDeleteButton
-                      confirmMessage={r.deleteConfirm(review.user.name)}
+                      confirmMessage={tf(r.deleteConfirm, { name: review.user.name })}
                       action={deleteReviewAction.bind(null, review.id)}
                       label={dict.common.delete}
                       deletingLabel={dict.common.deleting}

@@ -14,7 +14,7 @@ export default async function Home() {
     getSiteSettings(),
     getLocale(),
   ]);
-  const fullDict = getDictionary(locale);
+  const fullDict = await getDictionary(locale);
   const dict = fullDict.home;
   const heroImageUrl =
     settings?.heroImageUrl || "https://picsum.photos/seed/tbn-store-hero/1600/900";

@@ -16,7 +16,7 @@ function statusHref(status: string, q: string) {
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
-  return { title: getDictionary(locale).admin.bookings.title };
+  return { title: (await getDictionary(locale)).admin.bookings.title };
 }
 
 export default async function AdminBookingsPage(props: PageProps<"/admin/bookings">) {
@@ -24,7 +24,7 @@ export default async function AdminBookingsPage(props: PageProps<"/admin/booking
   const status = typeof searchParams.status === "string" ? searchParams.status : "";
   const q = typeof searchParams.q === "string" ? searchParams.q.trim() : "";
   const locale = await getLocale();
-  const dict = getDictionary(locale);
+  const dict = await getDictionary(locale);
   const b = dict.admin.bookings;
 
   const bookings = await prisma.booking.findMany({

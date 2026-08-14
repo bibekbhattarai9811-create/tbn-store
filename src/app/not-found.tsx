@@ -5,7 +5,7 @@ import { getDictionary } from "@/i18n/dictionaries";
 
 export default async function NotFound() {
   const locale = await getLocale();
-  const dict = getDictionary(locale).notFound;
+  const dict = (await getDictionary(locale)).notFound;
 
   return (
     <div className="mx-auto flex w-full max-w-xl flex-1 flex-col items-center justify-center gap-4 px-4 py-24 text-center sm:px-6">

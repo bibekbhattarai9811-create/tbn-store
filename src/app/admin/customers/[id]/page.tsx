@@ -4,10 +4,11 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { getLocale } from "@/i18n/locale";
 import { getDictionary } from "@/i18n/dictionaries";
+import { tf } from "@/i18n/format";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
-  return { title: getDictionary(locale).account.pageTitle };
+  return { title: (await getDictionary(locale)).account.pageTitle };
 }
 
 export default async function AdminCustomerDetailPage(
@@ -27,7 +28,7 @@ export default async function AdminCustomerDetailPage(
   }
 
   const locale = await getLocale();
-  const dict = getDictionary(locale);
+  const dict = await getDictionary(locale);
   const c = dict.admin.customers;
 
   return (
@@ -67,7 +68,7 @@ export default async function AdminCustomerDetailPage(
                       {dict.bookingStatus[booking.status]}
                     </span>
                   </div>
-                  <span className="font-semibold">{c.qty(booking.quantity)}</span>
+                  <span className="font-semibold">{tf(c.qty, { n: booking.quantity })}</span>
                 </Link>
               </li>
             ))}

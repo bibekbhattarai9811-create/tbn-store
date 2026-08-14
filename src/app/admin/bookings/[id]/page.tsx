@@ -7,10 +7,11 @@ import { BookingStatusForm } from "@/components/admin/BookingStatusForm";
 import { updateBookingStatusAction } from "../actions";
 import { getLocale } from "@/i18n/locale";
 import { getDictionary } from "@/i18n/dictionaries";
+import { tf } from "@/i18n/format";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
-  return { title: getDictionary(locale).admin.bookings.title };
+  return { title: (await getDictionary(locale)).admin.bookings.title };
 }
 
 export default async function AdminBookingDetailPage(
@@ -33,7 +34,7 @@ export default async function AdminBookingDetailPage(
   }
 
   const locale = await getLocale();
-  const dict = getDictionary(locale);
+  const dict = await getDictionary(locale);
   const b = dict.admin.bookings;
 
   return (
@@ -41,10 +42,10 @@ export default async function AdminBookingDetailPage(
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">
-            {b.detailTitle(booking.bookingNumber)}
+            {tf(b.detailTitle, { n: booking.bookingNumber })}
           </h1>
           <p className="text-sm text-foreground/60">
-            {b.received(booking.createdAt.toLocaleDateString())}
+            {tf(b.received, { date: booking.createdAt.toLocaleDateString() })}
           </p>
         </div>
         <BookingStatusForm
@@ -83,7 +84,7 @@ export default async function AdminBookingDetailPage(
               </Link>
               <span className="text-xs text-foreground/50">
                 {booking.size && `${b.colSize}: ${booking.size} · `}
-                {b.quantityRequested(booking.quantity)}
+                {tf(b.quantityRequested, { n: booking.quantity })}
               </span>
             </div>
           </div>

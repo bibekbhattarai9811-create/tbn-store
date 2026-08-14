@@ -6,12 +6,12 @@ import { getDictionary } from "@/i18n/dictionaries";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
-  return { title: getDictionary(locale).admin.categories.newTitle };
+  return { title: (await getDictionary(locale)).admin.categories.newTitle };
 }
 
 export default async function NewCategoryPage() {
   const locale = await getLocale();
-  const dict = getDictionary(locale);
+  const dict = await getDictionary(locale);
 
   return (
     <div className="flex flex-col gap-6">

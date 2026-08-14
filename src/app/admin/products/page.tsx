@@ -9,17 +9,18 @@ import { FeaturedToggle } from "@/components/admin/FeaturedToggle";
 import { deleteProductAction } from "./actions";
 import { getLocale } from "@/i18n/locale";
 import { getDictionary } from "@/i18n/dictionaries";
+import { tf } from "@/i18n/format";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
-  return { title: getDictionary(locale).admin.products.title };
+  return { title: (await getDictionary(locale)).admin.products.title };
 }
 
 export default async function AdminProductsPage(props: PageProps<"/admin/products">) {
   const searchParams = await props.searchParams;
   const q = typeof searchParams.q === "string" ? searchParams.q.trim() : "";
   const locale = await getLocale();
-  const dict = getDictionary(locale);
+  const dict = await getDictionary(locale);
   const p = dict.admin.products;
 
   const productWhere = q
@@ -126,7 +127,7 @@ export default async function AdminProductsPage(props: PageProps<"/admin/product
                             </Button>
                           </Link>
                           <ConfirmDeleteButton
-                            confirmMessage={p.deleteConfirm(product.name)}
+                            confirmMessage={tf(p.deleteConfirm, { name: product.name })}
                             action={deleteProductAction.bind(null, product.id)}
                             label={dict.common.delete}
                             deletingLabel={dict.common.deleting}

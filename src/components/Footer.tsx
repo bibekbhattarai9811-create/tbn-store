@@ -4,6 +4,7 @@ import { getCategories } from "@/lib/products";
 import { auth } from "@/auth";
 import { getLocale } from "@/i18n/locale";
 import { getDictionary } from "@/i18n/dictionaries";
+import { tf } from "@/i18n/format";
 
 export async function Footer() {
   const [categories, session, locale] = await Promise.all([
@@ -11,7 +12,7 @@ export async function Footer() {
     auth(),
     getLocale(),
   ]);
-  const dict = getDictionary(locale).footer;
+  const dict = (await getDictionary(locale)).footer;
 
   return (
     <footer className="border-t border-border-subtle bg-surface">
@@ -79,7 +80,7 @@ export async function Footer() {
         </div>
       </div>
       <div className="border-t border-border-subtle px-4 py-4 text-center text-xs text-foreground/50 sm:px-6 lg:px-8">
-        {dict.rights(new Date().getFullYear())}
+        {tf(dict.rights, { year: new Date().getFullYear() })}
       </div>
     </footer>
   );
