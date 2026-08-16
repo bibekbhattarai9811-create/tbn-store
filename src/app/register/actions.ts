@@ -46,7 +46,7 @@ export async function registerAction(
     },
   });
 
-  const redirectTo = getSafeCallbackUrl(formData.get("callbackUrl"), "/account");
+  const redirectTo = getSafeCallbackUrl(formData.get("callbackUrl"), "/");
 
   try {
     await signIn("credentials", {
