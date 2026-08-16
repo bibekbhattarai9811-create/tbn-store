@@ -23,13 +23,13 @@ export function ProductGallery({ images }: { images: ProductImage[] }) {
         )}
       </div>
       {images.length > 1 && (
-        <div className="flex gap-3">
+        <div className="flex gap-3 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {images.map((image, index) => (
             <button
               key={image.url}
               type="button"
               onClick={() => setActiveIndex(index)}
-              className={`relative aspect-square w-20 overflow-hidden rounded-xl border ${
+              className={`relative aspect-square w-20 shrink-0 overflow-hidden rounded-xl border ${
                 index === activeIndex
                   ? "border-foreground"
                   : "border-border-subtle"

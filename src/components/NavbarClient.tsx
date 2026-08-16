@@ -183,6 +183,17 @@ export function NavbarClient({
             </Link>
           )}
 
+          {user && (
+            <Link
+              href="/account"
+              className="flex items-center gap-2 rounded-lg px-2 py-2 text-sm hover:bg-surface sm:hidden"
+              onClick={() => setMenuOpen(false)}
+            >
+              <User size={16} />
+              {user.name?.split(" ")[0] ?? dict.account}
+            </Link>
+          )}
+
           <Link
             href="/products"
             className="rounded-lg px-2 py-2 text-sm hover:bg-surface"
